@@ -29,7 +29,7 @@ export const world = (function () {
     const createMaterial = function (name, mapPath, emissive) {
         const material = new BABYLON.StandardMaterial(name, scene);
         const texturePath = 'img/textures/' + mapPath;
-        
+
         if (emissive) {
             material.emissiveTexture = new BABYLON.Texture(texturePath, scene);
             material.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -53,7 +53,7 @@ export const world = (function () {
     /**
      * Crea una órbita visual para un planeta
      */
-    const createOrbit = function (planetName, radius, inclination) {
+    const createOrbit = function (planetName, radius, inclination, color) {
         const orbitPoints = [];
         const orbitSegments = 64; // Definición del círculo con 64 segmentos
 
@@ -65,7 +65,7 @@ export const world = (function () {
         }
 
         const orbit = BABYLON.MeshBuilder.CreateLines(`${planetName}_orbit`, { points: orbitPoints }, scene);
-        orbit.color = new BABYLON.Color3(1, 0, 0); // Color rojo
+        orbit.color = color;
 
         // Aplicar la inclinación
         orbit.rotation.z = inclination * (Math.PI / 180);
@@ -100,22 +100,22 @@ export const world = (function () {
     };
 
     const addChildNode = function (satelliteData, parentPlanet, distanceFactor, scaleX, scaleY, scaleZ) {
-    
+
         // Create a sphere for the satellite
         satelliteData.mesh = BABYLON.Mesh.CreateSphere(satelliteData.name, 64, 5, scene);
-    
+
         // Scale the satellite based on the parameters provided
         satelliteData.mesh.scaling = new BABYLON.Vector3(scaleX * 0.1, scaleX * 0.1, scaleX * 0.1);
-    
+
         // Create and apply the material for the satellite
         satelliteData.mesh.material = createMaterial(satelliteData.name, `${satelliteData.name.toLowerCase()}.jpg`, false);
-    
+
         // Set the initial position of the satellite relative to its parent
         satelliteData.mesh.position = new BABYLON.Vector3(distanceFactor, 0, 0);
-    
+
         // Make the satellite a child of the parent planet so it orbits around it
         satelliteData.mesh.parent = parentPlanet.mesh;
-    
+
         // Create a path animation to simulate the orbit around the parent
         const orbitAnimation = new BABYLON.Animation(
             `${satelliteData.name}Orbit`,
@@ -124,12 +124,12 @@ export const world = (function () {
             BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
             BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
         );
-    
+
         // Define the keyframes for the orbit (circular path)
         const keyFrames = [];
         const orbitRadius = distanceFactor; // Set the radius of the orbit
         const numFrames = 360; // Number of frames for one full orbit
-    
+
         for (let frame = 0; frame <= numFrames; frame++) {
             const angle = (frame / numFrames) * 2 * Math.PI; // Angle in radians
             const x = orbitRadius * Math.cos(angle); // X position
@@ -139,29 +139,27 @@ export const world = (function () {
                 value: new BABYLON.Vector3(x, 0, z), // Orbit on the X-Z plane
             });
         }
-    
+
         // Set the keyframes to the animation
         orbitAnimation.setKeys(keyFrames);
-    
+
         // Attach the animation to the satellite's mesh
         satelliteData.mesh.animations.push(orbitAnimation);
-    
+
         // Begin the animation
         scene.beginAnimation(satelliteData.mesh, 0, numFrames, true);
     };
-    
-    
-    
+
     /**
      * Añade un planeta y su órbita al sistema
      */
-    const addPlanetAndOrbit = function (elementData) {
+    const addPlanetAndOrbit = function (elementData, orbitColor, diameterScale = 1) {
         const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, child } = elementData;
-    
+
         // Definir propiedades del planeta
-        const diameter = 1.0; // Ajustar el diámetro según sea necesario
+        const diameter = diameterScale; // Ajustar el diámetro según sea necesario
         const orbitRadius = semiMajorAxis * SCALE_FACTOR;
-        
+
         system[name.toLowerCase()] = {
             mesh: null,
             name: name.toLowerCase(),
@@ -179,24 +177,18 @@ export const world = (function () {
                 angle: meanAnomalyAtEpoch * (Math.PI / 180) // Convertir el ángulo a radianes
             }
         };
-    
+
         // Crear el planeta
         createPlanet(system[name.toLowerCase()]);
         system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, false);
-    
+
         // Crear la órbita visual
-        createOrbit(system[name.toLowerCase()].name, orbitRadius, orbitalInclination);
-        system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
-    
-        // // Si el planeta tiene un satélite, añadirlo como nodo hijo
-        // if (child) {
-        //     addChildNode(child, system[name.toLowerCase()], child.semiMajorAxis * SCALE_FACTOR, 0.7, 0.7, 0.7);
-        // }
+        //createOrbit(system[name.toLowerCase()].name, orbitRadius, orbitalInclination, orbitColor);
+        //system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
     };
-    
 
     /**
-     * Obtiene y procesa los datos de los planetas
+     * Obtiene y procesa los datos de los cuerpos celestes
      */
     const fetchAndProcessPlanets = async function () {
         try {
@@ -205,26 +197,48 @@ export const world = (function () {
                 throw new Error(`Error al obtener los datos: ${response.status}`);
             }
             const data = await response.json();
-            const elements = data.bodies.planets; // Planetas, pha y dwarf_planets
-
-            // Itera sobre los datos y añade cada planeta
-            //elements.forEach(element => addPlanetAndOrbit(element));
-
-            elements.forEach(element => {
-                addPlanetAndOrbit(element);
+            
+            // Función para procesar cada elemento del sistema (planet, pha, dwarf_planet)
+            const processElement = (element, orbitColor, diameterScale) => {
+                addPlanetAndOrbit(element, orbitColor, diameterScale);
     
                 // Verificar si tiene satélite (o satélites)
                 if (element.child) {
                     // Procesar el satélite como un nodo hijo
-                    console.log(element.child.name)
-
-                    addChildNode(element.child, system[element.name.toLowerCase()], 2 , 0.7, 0.7, 0.7);
+                    console.log(`Satélite encontrado para ${element.name}: ${element.child.name}`);
+                    
+                    // Ajustar la escala del satélite si es necesario
+                    const childScaleFactor = 0.7; // Ajusta el tamaño del satélite según sea necesario
+    
+                    // Usar un valor fijo para la posición (distancia) si `semiMajorAxis` es incorrecto
+                    const distanceFactor = element.child.semiMajorAxis || 2; // Ajusta la distancia del satélite
+    
+                    // Añadir el satélite como un nodo hijo del planeta
+                    addChildNode(element.child, system[element.name.toLowerCase()], distanceFactor, childScaleFactor, childScaleFactor, childScaleFactor);
                 }
+            };
+    
+            // Procesar planetas normales
+            data.bodies.planets.forEach(planet => {
+                processElement(planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
             });
+    
+            // Procesar objetos PHA (potencialmente peligrosos)
+            data.bodies.pha.forEach(pha => {
+                processElement(pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
+            });
+    
+            // Procesar planetas enanos
+            data.bodies.dwarf_planets.forEach(dwarf => {
+                processElement(dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Color azul para planetas enanos
+            });
+    
         } catch (error) {
             showError(error);
         }
     };
+    
+
 
     /**
      * Actualiza las posiciones de todos los cuerpos celestes en el sistema
@@ -232,7 +246,7 @@ export const world = (function () {
     const updateCelestialPositions = function () {
         for (let key in system) {
             const planet = system[key];
-            
+
             // Actualizar posición de la órbita
             if (planet.orbit.angle !== 0) {
                 planet.mesh.position.x = planet.orbit.radius * Math.sin(planet.orbit.angle);
