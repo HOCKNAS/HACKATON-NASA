@@ -6,9 +6,9 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 data = {
-  "bodies": [
+  "bodies": {
     "planets": [
-    {
+      {
         "name": "Sun",
         "semiMajorAxis": 0,
         "orbitalInclination": 0,
@@ -98,8 +98,8 @@ data = {
         "meanAnomalyAtEpoch": 256.228,
         "siderealPeriod": 164.79132
     }
-    ]
-    "PHA": [
+    ],
+    "pha": [
       {
       "name": "2004TN1",
       "semiMajorAxis": 2.74,
@@ -600,11 +600,62 @@ data = {
       "meanAnomalyAtEpoch": 253.7,
       "siderealPeriod": 2.06
     }
+    ],
+    "dwarf_planets": [
+      {
+        "name": "Ceres",
+        "semiMajorAxis": 2.7675,
+        "orbitalInclination": 10.593,
+        "argumentOfPerigee": 73.597,
+        "orbitalEccentricity": 0.0758,
+        "ascendingNode": 80.329,
+        "meanAnomalyAtEpoch": 95.989,
+        "siderealPeriod": 4.60
+    },
+    {
+        "name": "Pluto",
+        "semiMajorAxis": 39.482,
+        "orbitalInclination": 17.16,
+        "argumentOfPerigee": 113.834,
+        "orbitalEccentricity": 0.2488,
+        "ascendingNode": 110.299,
+        "meanAnomalyAtEpoch": 14.53,
+        "siderealPeriod": 248.00
+    },
+    {
+        "name": "Eris",
+        "semiMajorAxis": 67.781,
+        "orbitalInclination": 44.04,
+        "argumentOfPerigee": 151.39,
+        "orbitalEccentricity": 0.44177,
+        "ascendingNode": 35.95,
+        "meanAnomalyAtEpoch": 204.17,
+        "siderealPeriod": 557.00
+    },
+    {
+        "name": "Makemake",
+        "semiMajorAxis": 45.792,
+        "orbitalInclination": 28.96,
+        "argumentOfPerigee": 294.91,
+        "orbitalEccentricity": 0.161,
+        "ascendingNode": 79.71,
+        "meanAnomalyAtEpoch": 165.5,
+        "siderealPeriod": 305.34
+    },
+    {
+        "name": "Haumea",
+        "semiMajorAxis": 43.218,
+        "orbitalInclination": 28.22,
+        "argumentOfPerigee": 240.21,
+        "orbitalEccentricity": 0.19126,
+        "ascendingNode": 121.91,
+        "meanAnomalyAtEpoch": 205.26,
+        "siderealPeriod": 283.28
+    }
     ]
-    "dwarf_planets": []
-    
-  ]
+  }
 }
+
 
 # Route to serve JSON data
 @app.route('/trajectories', methods=['GET'])

@@ -111,7 +111,7 @@ export const world = (function () {
                 throw new Error(`Error al obtener los datos: ${response.status}`);
             }
             const data = await response.json();
-            const elements = data.bodies;
+            const elements = data.bodies.planets;
 
             // Itera sobre los datos y añade cada planeta
             elements.forEach(element => addPlanetAndOrbit(element));
