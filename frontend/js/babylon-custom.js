@@ -101,23 +101,43 @@ export const world = (function () {
         createPlanet(system[name.toLowerCase()]);
 
         // Aplicar la inclinación de la órbita
-        // system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
+        system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
     };
 
-
-    const venusData = {
-        name: "Venus",
-        semiMajorAxis: 0.72333199, // En AU, ajusta el valor para tu escala
-        orbitalInclination: 3.39471, // En grados
-        argumentOfPerigee: 54.9, // Se puede usar más adelante para la orientación de la órbita
-        orbitalEccentricity: 0.00677323, // Podría usarse para ajustar la órbita
-        ascendingNode: 76.7, // Para la orientación de la órbita
-        meanAnomalyAtEpoch: 181.98, // En grados, para el punto de inicio de la órbita
-        siderealPeriod: 0.615 // Periodo en años terrestres
-    };
+    const elements = [
+        {
+            name: "Venus",
+            semiMajorAxis: 0.72333199,
+            orbitalInclination: 3.39471,
+            argumentOfPerigee: 54.9,
+            orbitalEccentricity: 0.00677323,
+            ascendingNode: 76.7,
+            meanAnomalyAtEpoch: 181.98,
+            siderealPeriod: 0.615
+        },
+        {
+            name: "1994PC1",
+            semiMajorAxis: 1.35,
+            orbitalInclination: 33.5,
+            argumentOfPerigee: 47.6,
+            orbitalEccentricity: 0.328,
+            ascendingNode: 117.9,
+            meanAnomalyAtEpoch: 136.5,
+            siderealPeriod: 1.56
+        },
+        {
+            name: "2012SW20",
+            semiMajorAxis: 2.46,
+            orbitalInclination: 10.2,
+            argumentOfPerigee: 62.1,
+            orbitalEccentricity: 0.68,
+            ascendingNode: 209.8,
+            meanAnomalyAtEpoch: 224.3,
+            siderealPeriod: 3.86
+        }
+        // Agrega más elementos según sea necesario
+    ];
     
-    // Añadir el planeta y su órbita
-    addPlanetAndOrbit(venusData);
     
     /**
      * Inicializa el canvas, motor, escena y bucle de render
@@ -146,6 +166,9 @@ export const world = (function () {
             engine.runRenderLoop(function () {
                 if (scene) scene.render();
             });
+
+            elements.forEach(element => addPlanetAndOrbit(element));
+
         } catch (e) {
             showError(e);
         }
