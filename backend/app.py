@@ -6,34 +6,94 @@ app = Flask(__name__)
 data = {
   "bodies": [
     {
-      "name": "Venus",
-      "semiMajorAxis": 0.72333199,
-      "orbitalInclination": 3.39471,
-      "argumentOfPerigee": 54.9,
-      "orbitalEccentricity": 0.00677323,
-      "ascendingNode": 76.7,
-      "meanAnomalyAtEpoch": 181.98,
-      "siderealPeriod": 0.615
+        "name": "Sun",
+        "semiMajorAxis": 0,
+        "orbitalInclination": 0,
+        "argumentOfPerigee": 0,
+        "orbitalEccentricity": 0,
+        "ascendingNode": 0,
+        "meanAnomalyAtEpoch": 0,
+        "siderealPeriod": 0
     },
     {
-      "name": "Earth",
-      "semiMajorAxis": 1,
-      "orbitalInclination": 0.00005,
-      "argumentOfPerigee": 102.94719,
-      "orbitalEccentricity": 0.01671022,
-      "ascendingNode": 0,
-      "meanAnomalyAtEpoch": 100.47,
-      "siderealPeriod": 1
+        "name": "Mercury",
+        "semiMajorAxis": 0.387098,
+        "orbitalInclination": 7.00487,
+        "argumentOfPerigee": 29.12,
+        "orbitalEccentricity": 0.20563,
+        "ascendingNode": 48.331,
+        "meanAnomalyAtEpoch": 174.796,
+        "siderealPeriod": 0.2408467
     },
     {
-      "name": "Mars",
-      "semiMajorAxis": 1.52366231,
-      "orbitalInclination": 1.85061,
-      "argumentOfPerigee": 286.5,
-      "orbitalEccentricity": 0.09339,
-      "ascendingNode": 49.57854,
-      "meanAnomalyAtEpoch": 355.43,
-      "siderealPeriod": 1.881
+        "name": "Venus",
+        "semiMajorAxis": 0.72333199,
+        "orbitalInclination": 3.39471,
+        "argumentOfPerigee": 54.884,
+        "orbitalEccentricity": 0.00677323,
+        "ascendingNode": 76.68,
+        "meanAnomalyAtEpoch": 50.115,
+        "siderealPeriod": 0.61519726
+    },
+    {
+        "name": "Earth",
+        "semiMajorAxis": 1.00000011,
+        "orbitalInclination": 0.00005,
+        "argumentOfPerigee": 114.20783,
+        "orbitalEccentricity": 0.01671022,
+        "ascendingNode": -11.26064,
+        "meanAnomalyAtEpoch": 357.51716,
+        "siderealPeriod": 1.0000174
+    },
+    {
+        "name": "Mars",
+        "semiMajorAxis": 1.52366231,
+        "orbitalInclination": 1.85061,
+        "argumentOfPerigee": 286.502,
+        "orbitalEccentricity": 0.09341233,
+        "ascendingNode": 49.57854,
+        "meanAnomalyAtEpoch": 19.412,
+        "siderealPeriod": 1.8808476
+    },
+    {
+        "name": "Jupiter",
+        "semiMajorAxis": 5.20336301,
+        "orbitalInclination": 1.3053,
+        "argumentOfPerigee": 275.066,
+        "orbitalEccentricity": 0.04839266,
+        "ascendingNode": 100.55615,
+        "meanAnomalyAtEpoch": 20.02,
+        "siderealPeriod": 11.862615
+    },
+    {
+        "name": "Saturn",
+        "semiMajorAxis": 9.53707032,
+        "orbitalInclination": 2.48446,
+        "argumentOfPerigee": 336.013,
+        "orbitalEccentricity": 0.0541506,
+        "ascendingNode": 113.71504,
+        "meanAnomalyAtEpoch": 317.02,
+        "siderealPeriod": 29.447498
+    },
+    {
+        "name": "Uranus",
+        "semiMajorAxis": 19.19126393,
+        "orbitalInclination": 0.76986,
+        "argumentOfPerigee": 96.998857,
+        "orbitalEccentricity": 0.04716771,
+        "ascendingNode": 74.22988,
+        "meanAnomalyAtEpoch": 142.2386,
+        "siderealPeriod": 84.016846
+    },
+    {
+        "name": "Neptune",
+        "semiMajorAxis": 30.06896348,
+        "orbitalInclination": 1.76917,
+        "argumentOfPerigee": 273.187,
+        "orbitalEccentricity": 0.00858587,
+        "ascendingNode": 131.72169,
+        "meanAnomalyAtEpoch": 256.228,
+        "siderealPeriod": 164.79132
     },
     {
       "name": "2004TN1",
