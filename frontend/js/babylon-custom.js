@@ -44,6 +44,26 @@ export const world = (function () {
         planetMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
         planetData.mesh.material = planetMaterial;
     };
+     /**
+     * Crea una órbita visual para un planeta
+     */
+    const createOrbit = function (planetName, radius, inclination) {
+        const orbitPoints = [];
+        const orbitSegments = 64; // Definición del círculo con 64 segmentos
+
+        for (let i = 0; i <= orbitSegments; i++) {
+            const theta = (i / orbitSegments) * 2 * Math.PI;
+            const x = radius * Math.cos(theta);
+            const z = radius * Math.sin(theta);
+            orbitPoints.push(new BABYLON.Vector3(x, 0, z));
+        }
+
+        const orbit = BABYLON.MeshBuilder.CreateLines(`${planetName}_orbit`, { points: orbitPoints }, scene);
+        orbit.color = new BABYLON.Color3(1, 0, 0); // Color rojo
+
+        // Aplicar la inclinación
+        orbit.rotation.z = inclination * (Math.PI / 180);
+    };
 
     /**
      * Crea la escena de BabylonJS
@@ -99,6 +119,9 @@ export const world = (function () {
 
         // Crear el planeta
         createPlanet(system[name.toLowerCase()]);
+
+        // Crear la órbita
+        createOrbit(system[name.toLowerCase()].name, system[name.toLowerCase()].orbit.radius, orbitalInclination);
 
         // Aplicar la inclinación de la órbita
         system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
