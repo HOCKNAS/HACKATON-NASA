@@ -7,6 +7,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 data = {
   "bodies": [
+    "planets": [
     {
         "name": "Sun",
         "semiMajorAxis": 0,
@@ -96,8 +97,10 @@ data = {
         "ascendingNode": 131.72169,
         "meanAnomalyAtEpoch": 256.228,
         "siderealPeriod": 164.79132
-    },
-    {
+    }
+    ]
+    "PHA": [
+      {
       "name": "2004TN1",
       "semiMajorAxis": 2.74,
       "orbitalInclination": 8.4,
@@ -597,6 +600,8 @@ data = {
       "meanAnomalyAtEpoch": 253.7,
       "siderealPeriod": 2.06
     }
+    ]
+    
   ]
 }
 
