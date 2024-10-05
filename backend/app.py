@@ -46,7 +46,10 @@ data = {
         "orbitalEccentricity": 0.01671022,
         "ascendingNode": -11.26064,
         "meanAnomalyAtEpoch": 357.51716,
-        "siderealPeriod": 1.0000174
+        "siderealPeriod": 1.0000174,
+        "child" : {
+          "name": "moon"
+          }
     },
     {
         "name": "Mars",
