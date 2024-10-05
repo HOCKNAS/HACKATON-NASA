@@ -104,39 +104,21 @@ export const world = (function () {
         system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
     };
 
-    const elements = [
-        {
-            name: "Venus",
-            semiMajorAxis: 0.72333199,
-            orbitalInclination: 3.39471,
-            argumentOfPerigee: 54.9,
-            orbitalEccentricity: 0.00677323,
-            ascendingNode: 76.7,
-            meanAnomalyAtEpoch: 181.98,
-            siderealPeriod: 0.615
-        },
-        {
-            name: "1994PC1",
-            semiMajorAxis: 1.35,
-            orbitalInclination: 33.5,
-            argumentOfPerigee: 47.6,
-            orbitalEccentricity: 0.328,
-            ascendingNode: 117.9,
-            meanAnomalyAtEpoch: 136.5,
-            siderealPeriod: 1.56
-        },
-        {
-            name: "2012SW20",
-            semiMajorAxis: 2.46,
-            orbitalInclination: 10.2,
-            argumentOfPerigee: 62.1,
-            orbitalEccentricity: 0.68,
-            ascendingNode: 209.8,
-            meanAnomalyAtEpoch: 224.3,
-            siderealPeriod: 3.86
+    const fetchAndProcessPlanets = async function () {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/trajectories'); // Se agregó esta función
+            if (!response.ok) {
+                throw new Error(`Error al obtener los datos: ${response.status}`);
+            }
+            const data = await response.json();
+            const elements = data.bodies;
+
+            // Itera sobre los datos y añade cada planeta
+            elements.forEach(element => addPlanetAndOrbit(element));
+        } catch (error) {
+            showError(error);
         }
-        // Agrega más elementos según sea necesario
-    ];
+    };
     
     
     /**
@@ -167,7 +149,8 @@ export const world = (function () {
                 if (scene) scene.render();
             });
 
-            elements.forEach(element => addPlanetAndOrbit(element));
+         // Llama a la función para obtener y procesar los planetas del endpoint
+         fetchAndProcessPlanets();
 
         } catch (e) {
             showError(e);
