@@ -601,6 +601,7 @@ data = {
       "siderealPeriod": 2.06
     }
     ]
+    "dwarf_planets": []
     
   ]
 }
