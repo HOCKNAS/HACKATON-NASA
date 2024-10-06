@@ -10,6 +10,12 @@
 <body>
     <!-- Canvas element for BabylonJS rendering -->
     <canvas id="renderCanvas" style="width: 100%; height: 100%;"></canvas>
+
+    <div id="infoCard" style="display: none; position: absolute; top: 200px; left: 200px; width: 300px; padding: 10px; background-color: white; border: 2px solid black; border-radius: 10px; z-index: 1000;">
+        <h2 id="cardTitle"></h2>
+        <h4 id="cardType"></h4>
+        <p id="cardDescription"></p>
+    </div>
     
     <!-- Include your custom scripts -->
     <script type="module" src="js/main.js"></script>

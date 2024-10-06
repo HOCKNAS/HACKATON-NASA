@@ -53,7 +53,7 @@ export const world = (function () {
     /**
      * Crea una órbita visual para un planeta
      */
-    const createOrbit = function (planetName, radius, inclination, color) {
+    const createOrbit = function (planetName, radius, color) {
         const orbitPoints = [];
         const orbitSegments = 64; // Definición del círculo con 64 segmentos
 
@@ -67,8 +67,7 @@ export const world = (function () {
         const orbit = BABYLON.MeshBuilder.CreateLines(`${planetName}_orbit`, { points: orbitPoints }, scene);
         orbit.color = color;
 
-        // Aplicar la inclinación
-        orbit.rotation.z = inclination * (Math.PI / 180);
+        return orbit;
     };
 
     /**
@@ -151,41 +150,88 @@ export const world = (function () {
     };
 
     /**
+     * Crea un nodo padre con inclinación para la órbita y el planeta
+     */
+    const createOrbitAndParentNode = function (planetData, orbitRadius, inclination, orbitColor) {
+        // Crear el nodo padre para aplicar la inclinación
+        const orbitParentNode = new BABYLON.TransformNode(`${planetData.name}_orbit_parent`, scene);
+
+        // Crear la órbita visual como hijo del nodo
+        createOrbit(planetData.name, orbitRadius, orbitColor).parent = orbitParentNode;
+
+        // Aplicar la inclinación al nodo padre
+        orbitParentNode.rotation.x = inclination * (Math.PI / 180);
+
+        return orbitParentNode;
+    };
+
+    const showCardInfo = (card) => {
+        const infoCard = document.getElementById('infoCard');
+        document.getElementById('cardTitle').innerText = card.title;
+        document.getElementById('cardType').innerText = card.type;
+        document.getElementById('cardDescription').innerText = card.description;
+        infoCard.style.display = 'block';
+    };
+
+    const addActionToCelestialBody = (mesh, card) => {
+        mesh.actionManager = new BABYLON.ActionManager(scene);
+
+        // Evento al hacer clic
+        mesh.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
+                showCardInfo(card);
+            })
+        );
+    };
+
+    /**
      * Añade un planeta y su órbita al sistema
      */
     const addPlanetAndOrbit = function (elementData, orbitColor, diameterScale = 1) {
-        const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, child } = elementData;
+        const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, child, card } = elementData;
 
         // Definir propiedades del planeta
         const diameter = diameterScale; // Ajustar el diámetro según sea necesario
         const orbitRadius = semiMajorAxis * SCALE_FACTOR;
 
+        // Crear el nodo padre con inclinación para la órbita y el planeta
+        const orbitParentNode = createOrbitAndParentNode(elementData, orbitRadius, orbitalInclination, orbitColor);
+
+        // Crear el planeta como hijo del nodo de la órbita
         system[name.toLowerCase()] = {
-            mesh: null,
+            mesh: BABYLON.Mesh.CreateSphere(name, 16, diameter, scene),
             name: name.toLowerCase(),
             emissive: false,
             map: `${name.toLowerCase()}.jpg`,
             diameter,
-            xpos: orbitRadius,
+            orbitParentNode,
             rotation: {
                 speed: 0.01, // Ajustar la velocidad de rotación si es necesario
                 angle: 0
             },
             orbit: {
                 radius: orbitRadius,
-                speed: (1 / siderealPeriod) * 0.01, // Ajustar la velocidad orbital para la visualización
+                speed: (1 / siderealPeriod) * 0.001, // Ajustar la velocidad orbital para la visualización
                 angle: meanAnomalyAtEpoch * (Math.PI / 180) // Convertir el ángulo a radianes
             }
         };
 
-        // Crear el planeta
-        createPlanet(system[name.toLowerCase()]);
+        // Aplicar el material al planeta
         system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, false);
 
-        // Crear la órbita visual
-        //createOrbit(system[name.toLowerCase()].name, orbitRadius, orbitalInclination, orbitColor);
-        //system[name.toLowerCase()].mesh.rotation.z = orbitalInclination * (Math.PI / 180);
+        // Posicionar el planeta en su órbita y hacerlo hijo del nodo padre
+        system[name.toLowerCase()].mesh.position.x = orbitRadius;
+        system[name.toLowerCase()].mesh.parent = orbitParentNode;
+
+        // Añadir el evento de clic para mostrar la tarjeta
+        addActionToCelestialBody(system[name.toLowerCase()].mesh, card);
+
+        // Añadir satélite si existe
+        if (child) {
+            addChildNode(child, system[name.toLowerCase()], child.semiMajorAxis, 0.3, 0.3, 0.3);
+        }
     };
+
 
     /**
      * Obtiene y procesa los datos de los cuerpos celestes
@@ -249,12 +295,17 @@ export const world = (function () {
 
             // Actualizar posición de la órbita
             if (planet.orbit.angle !== 0) {
-                planet.mesh.position.x = planet.orbit.radius * Math.sin(planet.orbit.angle);
-                planet.mesh.position.z = planet.orbit.radius * Math.cos(planet.orbit.angle);
+                const x = planet.orbit.radius * Math.cos(planet.orbit.angle);
+                const z = planet.orbit.radius * Math.sin(planet.orbit.angle);
+
+                planet.mesh.position.x = x;
+                planet.mesh.position.z = z;
+
+                // Actualizar el ángulo orbital
                 planet.orbit.angle += planet.orbit.speed;
             }
 
-            // Rotación del planeta
+            // Rotación del planeta sobre su propio eje
             planet.mesh.rotate(new BABYLON.Vector3(0, 1, 0), planet.rotation.speed);
         }
     };
