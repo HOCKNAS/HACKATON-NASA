@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My BabylonJS Solar System</title>
-    <!-- Include Babylon.js -->
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Mi Página Principal</title>
 </head>
 <body>
-    <!-- Canvas element for BabylonJS rendering -->
-    <canvas id="renderCanvas" style="width: 100%; height: 100%;"></canvas>
-
-    <div id="infoCard" style="display: none; position: absolute; top: 200px; left: 200px; width: 300px; padding: 10px; background-color: white; border: 2px solid black; border-radius: 10px; z-index: 1000;">
-        <h2 id="cardTitle"></h2>
-        <h4 id="cardType"></h4>
-        <p id="cardDescription"></p>
-    </div>
+    <!-- Video de fondo -->
+    <video autoplay muted loop id="video-fondo">
+        <source src="video/background.mp4" type="video/mp4">
+        Tu navegador no soporta la etiqueta de video.
+    </video>
     
-    <!-- Include your custom scripts -->
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/babylon-custom.js"></script>
+
+    <!-- Contenido existente de tu página -->
+    <div class="contenido">
+        <header>
+            <h1 class="titulo-3d">AstroDynamics</h1>
+        </header>
+
+        <!-- Nuevo apartado "Jugar" -->
+        <section id="jugar">
+            <h2></h2>
+            <div id="opciones">
+               <a href="orrery.html"><button class="boton-3d" id="btn-orrery">Virtual Orrery</button></a> 
+                <button class="boton-3d" id="btn-trivia" >Survey Game</button>
+            </div>
+            <div id="juego"></div>
+        </section>
+    </div>
+
+    <script src="js/script.js"></script>
 
 </body>
 </html>

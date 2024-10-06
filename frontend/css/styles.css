@@ -1,0 +1,81 @@
+/* Video de fondo */
+#video-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    object-fit: cover;
+}
+
+/* Contenido sobre el video */
+.contenido {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Título con efecto 3D */
+.titulo-3d {
+    font-size: 3em;
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #ff0055, 4px 4px 0 #ff6600, 6px 6px 0 #ffff00;
+    font-family: 'Verdana', sans-serif;
+    margin-bottom: 20px;
+}
+
+/* Sección "Jugar" */
+#jugar {
+    margin-top: 40px;
+    text-align: center;
+}
+
+/* Botones con efecto 3D */
+#opciones button {
+    margin: 10px;
+    padding: 15px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background: linear-gradient(145deg, #00aaff, #005577);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 5px 5px 10px #000000, -5px -5px 10px #333333;
+    transition: all 0.3s ease;
+}
+
+#opciones-juegos button:hover {
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 20px #000000, -10px -10px 20px #333333;
+}
+
+
+/* Botones con efecto 3D */
+#answers button {
+    margin: 10px;
+    padding: 15px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background: linear-gradient(145deg, #753acc, #622f9d);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 5px 5px 10px #000000, -5px -5px 10px #333333;
+    transition: all 0.3s ease;
+}
+
+#question {
+    font-size: 2em;
+    color: #ffffff;
+    font-family: 'Verdana', sans-serif;
+    margin-bottom: 20px;
+}
