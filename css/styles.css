@@ -24,9 +24,9 @@
 
 /* Título con efecto 3D */
 .titulo-3d {
-    font-size: 3em;
-    color: #ffffff;
-    text-shadow: 2px 2px 0 #ff0055, 4px 4px 0 #ff6600, 6px 6px 0 #ffff00;
+    font-size: 7em;
+    color: #fff;
+    text-shadow: 2px 2px 0 #e7df0e, 4px 4px 0 #3218f2, 6px 6px 0 #f10e0e;
     font-family: 'Verdana', sans-serif;
     margin-bottom: 20px;
 }
@@ -75,7 +75,10 @@
 
 #question {
     font-size: 2em;
-    color: #ffffff;
+    color: #000000; /* Cambié a negro para mejor contraste */
     font-family: 'Verdana', sans-serif;
     margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.469); /* Fondo blanco semi-transparente */
+    padding: 5px; /* Añade espacio interno para mejorar la separación del texto */
+    border-radius: 10px; /* Bordes redondeados para un efecto visual más agradable */
 }

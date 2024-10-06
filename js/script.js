@@ -53,7 +53,7 @@ function iniciarTrivia() {
     }
 
     function showScore() {
-        juegoDiv.innerHTML = `<h2>Your score is: ${score} de ${triviaQuestions.length}</h2>`;
+        juegoDiv.innerHTML = `<h2>Your score is: ${score} / ${triviaQuestions.length}</h2>`;
     }
 
     showQuestion();
