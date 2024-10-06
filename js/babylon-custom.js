@@ -166,7 +166,8 @@ export const world = (function () {
     };
 
     const showCardInfo = (card) => {
-        const infoCard = document.getElementById('infoCard');
+        document.getElementById('parrafo').style.display = 'none';
+        const infoCard = document.getElementById('info-box');
         document.getElementById('cardTitle').innerText = card.title;
         document.getElementById('cardType').innerText = card.type;
         document.getElementById('cardDescription').innerText = card.description;
@@ -236,54 +237,42 @@ export const world = (function () {
     /**
      * Obtiene y procesa los datos de los cuerpos celestes
      */
-    const fetchAndProcessPlanets = async function () {
+    const fetchAndProcessPlanets = async function (type) {
         try {
             const response = await fetch('https://hocknas.pythonanywhere.com/trajectories');
             if (!response.ok) {
                 throw new Error(`Error al obtener los datos: ${response.status}`);
             }
             const data = await response.json();
-            
-            // Función para procesar cada elemento del sistema (planet, pha, dwarf_planet)
-            const processElement = (element, orbitColor, diameterScale) => {
-                addPlanetAndOrbit(element, orbitColor, diameterScale);
-    
-                // Verificar si tiene satélite (o satélites)
-                if (element.child) {
-                    // Procesar el satélite como un nodo hijo
-                    console.log(`Satélite encontrado para ${element.name}: ${element.child.name}`);
-                    
-                    // Ajustar la escala del satélite si es necesario
-                    const childScaleFactor = 0.7; // Ajusta el tamaño del satélite según sea necesario
-    
-                    // Usar un valor fijo para la posición (distancia) si `semiMajorAxis` es incorrecto
-                    const distanceFactor = element.child.semiMajorAxis || 2; // Ajusta la distancia del satélite
-    
-                    // Añadir el satélite como un nodo hijo del planeta
-                    addChildNode(element.child, system[element.name.toLowerCase()], distanceFactor, childScaleFactor, childScaleFactor, childScaleFactor);
-                }
-            };
-    
-            // Procesar planetas normales
-            data.bodies.planets.forEach(planet => {
-                processElement(planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
-            });
-    
-            // Procesar objetos PHA (potencialmente peligrosos)
-            data.bodies.pha.forEach(pha => {
-                processElement(pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
-            });
-    
-            // Procesar planetas enanos
-            data.bodies.dwarf_planets.forEach(dwarf => {
-                processElement(dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Color azul para planetas enanos
-            });
-    
+
+            // Limpiar la escena antes de añadir nuevos cuerpos celestes (si es necesario)
+            //clearScene(); // Asegúrate de tener una función para limpiar la escena
+
+            // Procesar según el tipo especificado
+            if (type === 'planets') {
+                data.bodies.planets.forEach(planet => {
+                    processElement(planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
+                });
+            } else if (type === 'pha') {
+                data.bodies.pha.forEach(pha => {
+                    processElement(pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
+                });
+            } else if (type === 'dwarf_planets') {
+                data.bodies.dwarf_planets.forEach(dwarf => {
+                    processElement(dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Color azul para planetas enanos
+                });
+            }
         } catch (error) {
             showError(error);
         }
     };
-    
+
+    // Manejadores de eventos para los botones
+    document.getElementById('showPlanets').addEventListener('click', () => fetchAndProcessPlanets('planets'));
+    document.getElementById('showPHA').addEventListener('click', () => fetchAndProcessPlanets('pha'));
+    document.getElementById('showDwarfs').addEventListener('click', () => fetchAndProcessPlanets('dwarf_planets'));
+
+
 
 
     /**

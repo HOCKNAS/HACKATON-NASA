@@ -3,23 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/orrery.css">
     <title>AstroDynamics Orrery</title>
     <!-- Include Babylon.js -->
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
 </head>
 <body>
-    <!-- Canvas element for BabylonJS rendering -->
-    <canvas id="renderCanvas" style="width: 100%; height: 100%;"></canvas>
 
-    <div id="infoCard" style="display: none; position: absolute; top: 200px; left: 200px; width: 300px; padding: 10px; background-color: white; border: 2px solid black; border-radius: 10px; z-index: 1000;">
-        <h2 id="cardTitle"></h2>
-        <h4 id="cardType"></h4>
-        <p id="cardDescription"></p>
+    <div class="main-container">
+        <div class="sidebar">
+            <!-- Sidebar with buttons and info box -->
+            <div class="buttons">
+                <button class="outline-btn" onclick="showInfo('info1')">Planets</button>
+                <button class="outline-btn" onclick="showInfo('info2')">PHA Potentially Hazardous Asteroid</button>
+                <button class="outline-btn" onclick="showInfo('info3')">Dwarf Planets</button>
+            </div>
+            <div class="info-box" id="info-box">
+                <p id="parrafo">Haz clic en un botón para ver la información.</p>
+                <h2 id="cardTitle"></h2>
+                <h4 id="cardType"></h4>
+                <p id="cardDescription"></p>
+            </div>
+
+            <button id="showPlanets">Mostrar Planetas Normales</button>
+            <button id="showPHA">Mostrar PHA</button>
+            <button id="showDwarfs">Mostrar Planetas Enanos</button>
+            
+        </div>
+        
+
+        <!-- Canvas element for BabylonJS rendering -->
+        <canvas id="renderCanvas"></canvas>
     </div>
-    
+
+    <!-- Cuadro de diálogo -->
+    <div class="dialog" id="dialog">
+        <p>Usa el mouse para navegar en el orrery.</p>
+        <button onclick="closeDialog()">Cerrar</button>
+    </div>
+
+        <!-- Canvas element for BabylonJS rendering -->
+        <canvas id="renderCanvas" style="width: 100%; height: 100%;"></canvas>
+
     <!-- Include your custom scripts -->
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/babylon-custom.js"></script>
+    <script src="js/orrery.js"></script>
 
 </body>
 </html>

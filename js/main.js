@@ -11,10 +11,3 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-window.addEventListener('mouseover', (event) => {
-    // Si el clic no fue sobre un cuerpo celeste, ocultar la tarjeta
-    const infoCard = document.getElementById('infoCard');
-    if (!event.target.closest('#infoCard')) {
-        infoCard.style.display = 'none';
-    }
-});

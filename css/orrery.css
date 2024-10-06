@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Changed to column for navigation */
+    height: 100vh;
+    background-color: black; /* Set background color to black */
+    color: white; /* Set text color to white for contrast */
+    overflow: hidden; /* Elimina la barra de desplazamiento */
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 20px 20px; /* Aumentar el tamaño de la barra de navegación */
+    display: flex;
+    align-items: center;
+    height: 60px; /* Ajustar la altura de la barra de navegación */
+    font-size: 18px; /* Aumentar el tamaño de la letra de la barra de navegación */
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    transition: color 0.3s;
+    font-size: 18px; /* Aumentar el tamaño de la letra de los enlaces */
+}
+
+.navbar a:hover {
+    color: #ddd;
+}
+
+.main-container {
+    display: flex;
+    flex: 1; /* Take the remaining space below the navbar */
+}
+
+.sidebar {
+    width: 300px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1000;
+    background-color: #000000;
+    border-right: 2px solid white; /* Change border color to white for contrast */
+    height: 100%; /* Ensure it stretches to the full height */
+    font-size: 18px; /* Aumentar el tamaño de la letra en la barra lateral */
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.outline-btn {
+    padding: 10px 20px;
+    border: 2px solid white; /* Change outline color to white for contrast */
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    color: white;             /* Change text color to white */
+    font-size: 18px; /* Aumentar el tamaño de la letra de los botones */
+    cursor: pointer;
+    border-radius: 10px;      /* Rounded corners */
+    transition: all 0.3s ease;
+    outline: none;            /* Removes focus outline */
+}
+
+.outline-btn:hover {
+    background-color: white;  /* Changes background on hover */
+    color: black;             /* Changes text color on hover */
+}
+
+.outline-btn:focus {
+    outline: 3px solid #555; /* Focus outline for accessibility */
+}
+
+.info-box {
+    padding: 20px;
+    border: 2px solid white; /* Change border color to white for contrast */
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    min-height: 100px;
+    margin-top: 20px;
+    font-size: 18px; /* Aumentar el tamaño de la letra en la caja de información */
+}
+
+.info-box p {
+    margin: 0;
+    color: white; /* Set text color to white */
+}
+
+#renderCanvas {
+    flex: 1; /* Takes the remaining space */
+    display: block;
+    width: 100%; /* Reduce width to 90% to make it 10% smaller */
+    height: 100%; /* Reduce height to 90% to make it 10% smaller */
+    margin: auto; /* Center the canvas */
+    background-color: #000; /* Optional: Set canvas background color to black */
+}
+
+/* Estilos para el cuadro de diálogo */
+.dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    z-index: 1001; /* Asegura que esté encima de otros elementos */
+    display: none; /* Ocultar por defecto */
+}
+
+.dialog button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.dialog button:hover {
+    background-color: #555;
+}
