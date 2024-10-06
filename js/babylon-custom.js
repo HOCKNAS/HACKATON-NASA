@@ -238,7 +238,7 @@ export const world = (function () {
      */
     const fetchAndProcessPlanets = async function () {
         try {
-            const response = await fetch('http://127.0.0.1:5000/trajectories');
+            const response = await fetch('https://hocknas.pythonanywhere.com/trajectories');
             if (!response.ok) {
                 throw new Error(`Error al obtener los datos: ${response.status}`);
             }
