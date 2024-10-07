@@ -11,7 +11,7 @@
 
 4. Instalar flask
     
-    pip install flask
+    pip install flask flask_cors
 
 5. Crear servidor de flask 
     
