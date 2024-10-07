@@ -5,6 +5,9 @@ export const world = (function () {
     const system = {};
     const SCALE_FACTOR = 10; // Ajustar la escala de distancia
 
+    const toggleCheckbox = document.getElementById('toggleLabels');
+    const showLabelsInitially = toggleCheckbox.checked;
+
     const cameraType = {
         ARCROTATE: 'arcrotate'
     };
@@ -21,6 +24,47 @@ export const world = (function () {
      */
     const getEngine = function () {
         return engine;
+    };
+
+    // Variable para almacenar las etiquetas
+    const labels = [];
+
+    const createLabelForBody = (bodyName, bodyMesh, card, type) => {
+        // Crear un plano GUI para la etiqueta
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        // Crear un rectángulo para la etiqueta
+        const labelRect = new BABYLON.GUI.Rectangle();
+        labelRect.width = "60px";
+        labelRect.height = "30px";
+        labelRect.cornerRadius = 5;
+        labelRect.color = "white";
+        labelRect.thickness = 1;
+        labelRect.background = "black";
+        labelRect.isPointerBlocker = true; // Hacer que la etiqueta sea interactiva
+        advancedTexture.addControl(labelRect);
+
+        // Crear un texto para la etiqueta
+        const labelText = new BABYLON.GUI.TextBlock();
+        labelText.text = bodyName;
+        labelText.color = "white";
+        labelText.fontSize = 12;
+        labelRect.addControl(labelText);
+
+        // Posicionar la etiqueta en el cuerpo celeste
+        labelRect.linkWithMesh(bodyMesh);
+        labelRect.linkOffsetY = -30; // Ajuste de posición en el eje Y
+
+        // Añadir un evento de clic a la etiqueta
+        labelRect.onPointerDownObservable.add(function () {
+            // Mostrar la tarjeta de información del cuerpo celeste
+            showCardInfo(type, card);
+        });
+
+        // Agregar la etiqueta a la lista de etiquetas
+        labels.push(labelRect);
+
+        return labelRect;
     };
 
     /**
@@ -139,6 +183,9 @@ export const world = (function () {
         scene.beginAnimation(satelliteData.mesh, 0, numFrames, true);
 
         addActionToCelestialBody(type, satelliteData.mesh, satelliteData.card);
+
+        const label = createLabelForBody(satelliteData.name, satelliteData.mesh, satelliteData.card, type);
+        label.isVisible = showLabelsInitially;
     };
 
     /**
@@ -214,8 +261,7 @@ export const world = (function () {
         };
 
         // Aplicar el material al planeta
-        console.log(name)
-        if (name.toLowerCase() === "sun" ) {
+        if (name.toLowerCase() === "sun") {
             system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, true);
             const sunLight = new BABYLON.PointLight('sunlight', BABYLON.Vector3.Zero(), scene);
             sunLight.intensity = 2.2; // Ajusta la intensidad según lo necesario
@@ -231,6 +277,10 @@ export const world = (function () {
 
         // Añadir el evento de clic para mostrar la tarjeta
         addActionToCelestialBody(type, system[name.toLowerCase()].mesh, card);
+
+        const label = createLabelForBody(name, system[name.toLowerCase()].mesh, card, type);
+        label.isVisible = showLabelsInitially;
+
     };
 
     // Variables para almacenar los cuerpos celestes según su tipo
@@ -312,6 +362,16 @@ export const world = (function () {
     document.getElementById('showPHA').addEventListener('click', () => fetchAndProcessPlanets('pha'));
     document.getElementById('showDwarfs').addEventListener('click', () => fetchAndProcessPlanets('dwarf_planets'));
 
+    document.getElementById('toggleLabels').addEventListener('change', function (e) {
+        const showLabels = e.target.checked;
+
+        // Mostrar u ocultar etiquetas según el estado del checkbox
+        labels.forEach(label => {
+            label.isVisible = showLabels;
+        });
+
+
+    });
     /**
      * Actualiza las posiciones de todos los cuerpos celestes en el sistema
      */

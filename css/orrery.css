@@ -36,6 +36,51 @@ body, html {
     background: #fff;
 }
 
+/* Estilo para el contenedor del toggle */
+.toggle-container {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    gap: 10px;
+    padding: 15px;
+    cursor: pointer;
+    border: 2px solid #4A90E2;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: #4A90E2;
+    user-select: none; /* Evitar la selección del texto al hacer clic */
+}
+
+/* Ajustar el tamaño del checkbox */
+.toggle-container input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* Efecto de hover */
+.toggle-container:hover {
+    background: #4A90E2;
+    color: #fff;
+    border-color: #357ABD;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Efecto de clic */
+.toggle-container:active {
+    background: #357ABD;
+    border-color: #2C6FA3;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de foco para accesibilidad */
+.toggle-container:focus-within {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.4);
+}
+
 .info-box {
     padding: 10px;
     background-color: #fff;

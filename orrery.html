@@ -7,6 +7,7 @@
     <title>AstroDynamics Orrery</title>
     <!-- Include Babylon.js -->
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
 </head>
 <body>
     
@@ -27,6 +28,11 @@
                 <button id="showPlanets" class="outline-btn" onclick="showInfo('info1')">Planets, Sun and Moon</button>
                 <button id="showPHA" class="outline-btn" onclick="showInfo('info2')">PHA Potentially Hazardous Asteroid</button>
                 <button id="showDwarfs"class="outline-btn" onclick="showInfo('info3')">Dwarf Planets</button>
+
+                <label for="toggleLabels" class="toggle-container">
+                    <a>Show Labels</a> 
+                    <input type="checkbox" id="toggleLabels">
+                </label>
 
                 <button id="clear" onClick="window.location.reload();">Clear</button>
 

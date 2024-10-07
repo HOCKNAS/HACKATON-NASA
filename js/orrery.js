@@ -39,3 +39,7 @@ window.onload = function() {
     const dialog = document.getElementById('dialog');
     dialog.style.display = 'block'; // Muestra el cuadro de diálogo
 };
+
+window.addEventListener('load', () => {
+    document.getElementById('toggleLabels').dispatchEvent(new Event('change'));
+});
