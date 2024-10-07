@@ -30,6 +30,12 @@ export const world = (function () {
         const material = new BABYLON.StandardMaterial(name, scene);
         const texturePath = 'img/textures/' + mapPath;
 
+        if (name === "sun") {
+            const sunLight = new BABYLON.PointLight('sunlight', BABYLON.Vector3.Zero(), scene);
+            sunLight.intensity = 2.2; // Ajusta la intensidad según lo necesario
+            sunLight.position = new BABYLON.Vector3(0, 0, 0); // Reemplaza x, y, z con las coordenadas necesarias
+        }
+
         if (emissive) {
             material.emissiveTexture = new BABYLON.Texture(texturePath, scene);
             material.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -90,8 +96,7 @@ export const world = (function () {
         return scene;
     };
 
-    const addChildNode = function (satelliteData, parentPlanet, distanceFactor, scaleX, scaleY, scaleZ) {
-
+    const addChildNode = function (type, satelliteData, parentPlanet, distanceFactor, scaleX, scaleY, scaleZ) {
         // Create a sphere for the satellite
         satelliteData.mesh = BABYLON.Mesh.CreateSphere(satelliteData.name, 64, 5, scene);
         // Scale the satellite based on the parameters provided
@@ -139,8 +144,7 @@ export const world = (function () {
         // Begin the animation
         scene.beginAnimation(satelliteData.mesh, 0, numFrames, true);
 
-        addActionToCelestialBody(satelliteData.mesh,satelliteData.card );
-
+        addActionToCelestialBody(type, satelliteData.mesh, satelliteData.card);
     };
 
     /**
@@ -159,25 +163,26 @@ export const world = (function () {
         return orbitParentNode;
     };
 
-    const showCardInfo = (card) => {
-        //document.getElementById('parrafo').style.display = 'none';
+    const showCardInfo = (type, card) => {
         const infoCard = document.getElementById('info-box');
         document.getElementById('cardTitle').innerText = card.title;
         document.getElementById('cardType').innerText = card.type;
         document.getElementById('cardDescription').innerText = card.description;
-        document.getElementById('cardurl').innerText = "https://science.nasa.gov/" + card.title.toLowerCase();
-        document.getElementById('cardurl').href = "https://science.nasa.gov/" + card.title.toLowerCase();
+        if (type === 'planets') {
+            document.getElementById('cardurl').innerText = "https://science.nasa.gov/" + card.title.toLowerCase();
+            document.getElementById('cardurl').href = "https://science.nasa.gov/" + card.title.toLowerCase();
+        }
         document.getElementById('parrafo').style.display = 'none';
         infoCard.style.display = 'block';
     };
 
-    const addActionToCelestialBody = (mesh, card) => {
+    const addActionToCelestialBody = (type, mesh, card) => {
         mesh.actionManager = new BABYLON.ActionManager(scene);
 
         // Evento al hacer clic
         mesh.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
-                showCardInfo(card);
+                showCardInfo(type, card);
             })
         );
     };
@@ -185,7 +190,7 @@ export const world = (function () {
     /**
      * Añade un planeta y su órbita al sistema
      */
-    const addPlanetAndOrbit = function (elementData, orbitColor, diameterScale = 1) {
+    const addPlanetAndOrbit = function (type, elementData, orbitColor, diameterScale = 1) {
         const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, card } = elementData;
 
         // Definir propiedades del planeta
@@ -222,10 +227,8 @@ export const world = (function () {
         system[name.toLowerCase()].mesh.parent = orbitParentNode;
 
         // Añadir el evento de clic para mostrar la tarjeta
-        addActionToCelestialBody(system[name.toLowerCase()].mesh, card);
-
+        addActionToCelestialBody(type, system[name.toLowerCase()].mesh, card);
     };
-
 
     // Variables para almacenar los cuerpos celestes según su tipo
     let normalPlanetsMeshes = [];
@@ -250,15 +253,15 @@ export const world = (function () {
     /**
      * Procesar un elemento y agregarlo a la escena
      */
-    function processElement(elementData, color, diameterScale) {
-        addPlanetAndOrbit(elementData, color, diameterScale);
+    function processElement(type, elementData, color, diameterScale) {
+        addPlanetAndOrbit(type, elementData, color, diameterScale);
 
         // Agregar el mesh al array correspondiente
-        if (elementData.type === 'planet') {
+        if (type === 'planet') {
             normalPlanetsMeshes.push(system[elementData.name.toLowerCase()].mesh);
-        } else if (elementData.type === 'pha') {
+        } else if (type === 'pha') {
             phaMeshes.push(system[elementData.name.toLowerCase()].mesh);
-        } else if (elementData.type === 'dwarf_planet') {
+        } else if (type === 'dwarf_planet') {
             dwarfPlanetsMeshes.push(system[elementData.name.toLowerCase()].mesh);
         }
     }
@@ -280,21 +283,20 @@ export const world = (function () {
             // Procesar planetas y renderizarlos en la escena
             if (type === 'planets') {
                 data.bodies.planets.forEach(planet => {
-                    processElement(planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
+                    processElement(type, planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
                     if (planet.child) {
                         // Añadir el satélite solo cuando el planeta esté completamente renderizado
-                        addChildNode(planet.child, system[planet.name.toLowerCase()], 2, 0.7, 0.3, 0.3);
-                        console.log("intentando añadir" + planet.child.name)
+                        addChildNode(type, planet.child, system[planet.name.toLowerCase()], 2, 0.7, 0.3, 0.3);
                     }
                 });
 
             } else if (type === 'pha') {
                 data.bodies.pha.forEach(pha => {
-                    processElement(pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
+                    processElement(type, pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
                 });
             } else if (type === 'dwarf_planets') {
                 data.bodies.dwarf_planets.forEach(dwarf => {
-                    processElement(dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Color azul para planetas enanos
+                    processElement(type, dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Color azul para planetas enanos
                 });
             }
         } catch (error) {
@@ -302,12 +304,10 @@ export const world = (function () {
         }
     };
 
-
     // Manejadores de eventos para los botones
     document.getElementById('showPlanets').addEventListener('click', () => fetchAndProcessPlanets('planets'));
     document.getElementById('showPHA').addEventListener('click', () => fetchAndProcessPlanets('pha'));
     document.getElementById('showDwarfs').addEventListener('click', () => fetchAndProcessPlanets('dwarf_planets'));
-
 
     /**
      * Actualiza las posiciones de todos los cuerpos celestes en el sistema
