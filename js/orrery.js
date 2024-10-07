@@ -17,7 +17,12 @@ function showInfo(info) {
             message = 'Haz clic en un botón para ver la información.';
     }
 
-    infoBox.innerHTML = `<p>${message}</p>`;
+    infoBox.innerHTML = `
+        <h3 id="parrafo">${message}</h3>
+        <h2 id="cardTitle"></h2>
+        <h4 id="cardType"></h4>
+        <p id="cardDescription"></p>
+    `;
 }
 
 function closeDialog() {

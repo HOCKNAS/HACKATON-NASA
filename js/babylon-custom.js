@@ -166,11 +166,12 @@ export const world = (function () {
     };
 
     const showCardInfo = (card) => {
-        document.getElementById('parrafo').style.display = 'none';
+        //document.getElementById('parrafo').style.display = 'none';
         const infoCard = document.getElementById('info-box');
         document.getElementById('cardTitle').innerText = card.title;
         document.getElementById('cardType').innerText = card.type;
         document.getElementById('cardDescription').innerText = card.description;
+        document.getElementById('parrafo').style.display = 'none';
         infoCard.style.display = 'block';
     };
 
@@ -234,9 +235,47 @@ export const world = (function () {
     };
 
 
+    // Variables para almacenar los cuerpos celestes según su tipo
+    let normalPlanetsMeshes = [];
+    let phaMeshes = [];
+    let dwarfPlanetsMeshes = [];
+
+    /**
+     * Función para limpiar la escena
+     */
+    function clearScene() {
+        // Oculta todos los cuerpos celestes existentes
+        normalPlanetsMeshes.forEach(mesh => mesh.dispose());
+        phaMeshes.forEach(mesh => mesh.dispose());
+        dwarfPlanetsMeshes.forEach(mesh => mesh.dispose());
+
+        // Vacía los arrays
+        normalPlanetsMeshes = [];
+        phaMeshes = [];
+        dwarfPlanetsMeshes = [];
+    }
+
+    /**
+     * Procesar un elemento y agregarlo a la escena
+     */
+    function processElement(elementData, color, diameterScale) {
+        addPlanetAndOrbit(elementData, color, diameterScale);
+
+        // Agregar el mesh al array correspondiente
+        if (elementData.type === 'planet') {
+            normalPlanetsMeshes.push(system[elementData.name.toLowerCase()].mesh);
+        } else if (elementData.type === 'pha') {
+            phaMeshes.push(system[elementData.name.toLowerCase()].mesh);
+        } else if (elementData.type === 'dwarf_planet') {
+            dwarfPlanetsMeshes.push(system[elementData.name.toLowerCase()].mesh);
+        }
+    }
     /**
      * Obtiene y procesa los datos de los cuerpos celestes
      */
+    /**
+ * Obtiene y procesa los datos de los cuerpos celestes
+ */
     const fetchAndProcessPlanets = async function (type) {
         try {
             const response = await fetch('https://hocknas.pythonanywhere.com/trajectories');
@@ -245,8 +284,8 @@ export const world = (function () {
             }
             const data = await response.json();
 
-            // Limpiar la escena antes de añadir nuevos cuerpos celestes (si es necesario)
-            //clearScene(); // Asegúrate de tener una función para limpiar la escena
+            // Limpiar la escena antes de añadir nuevos cuerpos celestes
+            clearScene();
 
             // Procesar según el tipo especificado
             if (type === 'planets') {
@@ -271,8 +310,6 @@ export const world = (function () {
     document.getElementById('showPlanets').addEventListener('click', () => fetchAndProcessPlanets('planets'));
     document.getElementById('showPHA').addEventListener('click', () => fetchAndProcessPlanets('pha'));
     document.getElementById('showDwarfs').addEventListener('click', () => fetchAndProcessPlanets('dwarf_planets'));
-
-
 
 
     /**
