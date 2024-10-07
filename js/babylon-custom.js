@@ -60,37 +60,37 @@ export const world = (function () {
             // Mostrar la tarjeta de información del cuerpo celeste
             showCardInfo(type, card);
     
-            // // Centrar la cámara en el objeto seleccionado
-            // camera.setTarget(bodyMesh.getAbsolutePosition());
+            // Centrar la cámara en el objeto seleccionado
+            camera.setTarget(bodyMesh.getAbsolutePosition());
     
-            // // Calcular un radio óptimo basado en el tamaño del cuerpo
-            // const desiredRadius = bodyMesh.getBoundingInfo().boundingSphere.radiusWorld * 3; // Ajusta el factor multiplicativo según sea necesario
+            // Calcular un radio óptimo basado en el tamaño del cuerpo
+            const desiredRadius = bodyMesh.getBoundingInfo().boundingSphere.radiusWorld * 3; // Ajusta el factor multiplicativo según sea necesario
     
-            // // Configurar la animación para acercar la cámara
-            // const animation = new BABYLON.Animation(
-            //     "cameraZoom",
-            //     "radius",
-            //     30, // FPS
-            //     BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-            //     BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
-            // );
+            // Configurar la animación para acercar la cámara
+            const animation = new BABYLON.Animation(
+                "cameraZoom",
+                "radius",
+                30, // FPS
+                BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+            );
     
-            // // Definir los fotogramas clave de la animación
-            // const keys = [];
-            // keys.push({ frame: 0, value: camera.radius }); // Comienza desde el valor actual del radio
-            // keys.push({ frame: 60, value: desiredRadius }); // Termina en el radio deseado (acercamiento)
+            // Definir los fotogramas clave de la animación
+            const keys = [];
+            keys.push({ frame: 0, value: camera.radius }); // Comienza desde el valor actual del radio
+            keys.push({ frame: 60, value: desiredRadius }); // Termina en el radio deseado (acercamiento)
     
-            // // Establecer los fotogramas clave
-            // animation.setKeys(keys);
+            // Establecer los fotogramas clave
+            animation.setKeys(keys);
     
-            // // Aplicar la animación a la cámara
-            // camera.animations.push(animation);
+            // Aplicar la animación a la cámara
+            camera.animations.push(animation);
     
-            // // Iniciar la animación
-            // scene.beginAnimation(camera, 0, 60, false);
+            // Iniciar la animación
+            scene.beginAnimation(camera, 0, 60, false);
     
-            // // Guardar el objeto seleccionado para que la cámara lo siga
-            // selectedObject = bodyMesh;
+            // Guardar el objeto seleccionado para que la cámara lo siga
+            selectedObject = bodyMesh;
         });
     
         // Agregar la etiqueta a la lista de etiquetas
@@ -300,11 +300,6 @@ export const world = (function () {
         );
     };
     
-    
-    
-    
-    
-
     /**
      * Añade un planeta y su órbita al sistema
      */
