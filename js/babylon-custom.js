@@ -32,7 +32,7 @@ export const world = (function () {
     const createLabelForBody = (bodyName, bodyMesh, card, type) => {
         // Crear un plano GUI para la etiqueta
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
+    
         // Crear un rectángulo para la etiqueta
         const labelRect = new BABYLON.GUI.Rectangle();
         labelRect.width = "60px";
@@ -43,29 +43,63 @@ export const world = (function () {
         labelRect.background = "black";
         labelRect.isPointerBlocker = true; // Hacer que la etiqueta sea interactiva
         advancedTexture.addControl(labelRect);
-
+    
         // Crear un texto para la etiqueta
         const labelText = new BABYLON.GUI.TextBlock();
         labelText.text = bodyName;
         labelText.color = "white";
         labelText.fontSize = 12;
         labelRect.addControl(labelText);
-
+    
         // Posicionar la etiqueta en el cuerpo celeste
         labelRect.linkWithMesh(bodyMesh);
         labelRect.linkOffsetY = -30; // Ajuste de posición en el eje Y
-
+    
         // Añadir un evento de clic a la etiqueta
         labelRect.onPointerDownObservable.add(function () {
             // Mostrar la tarjeta de información del cuerpo celeste
             showCardInfo(type, card);
+    
+            // // Centrar la cámara en el objeto seleccionado
+            // camera.setTarget(bodyMesh.getAbsolutePosition());
+    
+            // // Calcular un radio óptimo basado en el tamaño del cuerpo
+            // const desiredRadius = bodyMesh.getBoundingInfo().boundingSphere.radiusWorld * 3; // Ajusta el factor multiplicativo según sea necesario
+    
+            // // Configurar la animación para acercar la cámara
+            // const animation = new BABYLON.Animation(
+            //     "cameraZoom",
+            //     "radius",
+            //     30, // FPS
+            //     BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            //     BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+            // );
+    
+            // // Definir los fotogramas clave de la animación
+            // const keys = [];
+            // keys.push({ frame: 0, value: camera.radius }); // Comienza desde el valor actual del radio
+            // keys.push({ frame: 60, value: desiredRadius }); // Termina en el radio deseado (acercamiento)
+    
+            // // Establecer los fotogramas clave
+            // animation.setKeys(keys);
+    
+            // // Aplicar la animación a la cámara
+            // camera.animations.push(animation);
+    
+            // // Iniciar la animación
+            // scene.beginAnimation(camera, 0, 60, false);
+    
+            // // Guardar el objeto seleccionado para que la cámara lo siga
+            // selectedObject = bodyMesh;
         });
-
+    
         // Agregar la etiqueta a la lista de etiquetas
         labels.push(labelRect);
-
+    
         return labelRect;
     };
+    
+    
 
     /**
      * Crea y retorna un material para un cuerpo celeste
@@ -80,7 +114,7 @@ export const world = (function () {
         } else {
             material.diffuseTexture = new BABYLON.Texture(texturePath, scene);
         }
-    
+
         // Eliminar brillo especular
         material.specularColor = new BABYLON.Color3(0, 0, 0);
         return material;
@@ -219,14 +253,57 @@ export const world = (function () {
 
     const addActionToCelestialBody = (type, mesh, card) => {
         mesh.actionManager = new BABYLON.ActionManager(scene);
-
+        
+        
         // Evento al hacer clic
         mesh.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
                 showCardInfo(type, card);
+                
+                
+                // Centrar la cámara en el objeto seleccionado
+                camera.setTarget(mesh.getAbsolutePosition());
+    
+                // Calcular un radio óptimo basado en el tamaño del cuerpo
+                const meshRadius = mesh.getBoundingInfo().boundingSphere.radiusWorld;
+                const desiredRadius = Math.max(meshRadius * 3, 5); // Ajusta 5 como radio mínimo para evitar atravesar asteroides pequeños
+    
+                // Ajustar el radio mínimo para la cámara
+                camera.lowerRadiusLimit = desiredRadius;
+    
+                // Configurar la animación para acercar la cámara
+                const animation = new BABYLON.Animation(
+                    "cameraZoom",
+                    "radius",
+                    30, // FPS
+                    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                    BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+                );
+    
+                // Definir los fotogramas clave de la animación
+                const keys = [];
+                keys.push({ frame: 0, value: camera.radius }); // Comienza desde el valor actual del radio
+                keys.push({ frame: 60, value: desiredRadius }); // Termina en el radio deseado (acercamiento)
+    
+                // Establecer los fotogramas clave
+                animation.setKeys(keys);
+    
+                // Aplicar la animación a la cámara
+                camera.animations.push(animation);
+    
+                // Iniciar la animación
+                scene.beginAnimation(camera, 0, 60, false);
+    
+                // Guardar el objeto seleccionado para que la cámara lo siga
+                selectedObject = mesh;
             })
         );
     };
+    
+    
+    
+    
+    
 
     /**
      * Añade un planeta y su órbita al sistema
