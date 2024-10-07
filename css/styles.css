@@ -82,3 +82,19 @@
     padding: 5px; /* Añade espacio interno para mejorar la separación del texto */
     border-radius: 10px; /* Bordes redondeados para un efecto visual más agradable */
 }
+
+.github-link {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #fff;
+}
+
+.github-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    border-radius: 15px; /* Bordes redondeados para un efecto visual más agradable */
+
+}
