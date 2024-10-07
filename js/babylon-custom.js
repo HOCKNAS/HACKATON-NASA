@@ -30,19 +30,13 @@ export const world = (function () {
         const material = new BABYLON.StandardMaterial(name, scene);
         const texturePath = 'img/textures/' + mapPath;
 
-        if (name === "sun") {
-            const sunLight = new BABYLON.PointLight('sunlight', BABYLON.Vector3.Zero(), scene);
-            sunLight.intensity = 2.2; // Ajusta la intensidad según lo necesario
-            sunLight.position = new BABYLON.Vector3(0, 0, 0); // Reemplaza x, y, z con las coordenadas necesarias
-        }
-
         if (emissive) {
             material.emissiveTexture = new BABYLON.Texture(texturePath, scene);
             material.diffuseColor = new BABYLON.Color3(0, 0, 0);
         } else {
             material.diffuseTexture = new BABYLON.Texture(texturePath, scene);
         }
-
+    
         // Eliminar brillo especular
         material.specularColor = new BABYLON.Color3(0, 0, 0);
         return material;
@@ -220,7 +214,16 @@ export const world = (function () {
         };
 
         // Aplicar el material al planeta
-        system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, false);
+        console.log(name)
+        if (name.toLowerCase() === "sun" ) {
+            system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, true);
+            const sunLight = new BABYLON.PointLight('sunlight', BABYLON.Vector3.Zero(), scene);
+            sunLight.intensity = 2.2; // Ajusta la intensidad según lo necesario
+            sunLight.diffuse = new BABYLON.Color3(1, 0.9, 0.7); // Color cálido para simular la luz solar
+            sunLight.position = new BABYLON.Vector3(0, 0, 0); // Reemplaza x, y, z con las coordenadas necesarias
+        } else {
+            system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, false);
+        }
 
         // Posicionar el planeta en su órbita y hacerlo hijo del nodo padre
         system[name.toLowerCase()].mesh.position.x = orbitRadius;
