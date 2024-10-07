@@ -23,6 +23,9 @@ function showInfo(info) {
         <h4 id="cardType"></h4>
         <p id="cardDescription"></p>
     `;
+
+    event.target.disabled = true;
+
 }
 
 function closeDialog() {
