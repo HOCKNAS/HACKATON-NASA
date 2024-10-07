@@ -43,14 +43,6 @@ export const world = (function () {
     };
 
     /**
-     * Crea un planeta basado en datos proporcionados
-     */
-    const createPlanet = function (planetData) {
-        planetData.mesh = BABYLON.Mesh.CreateSphere(planetData.name, 16, planetData.diameter, scene);
-        planetData.mesh.position.x = planetData.xpos;
-    };
-
-    /**
      * Crea una órbita visual para un planeta
      */
     const createOrbit = function (planetName, radius, color) {
@@ -102,7 +94,6 @@ export const world = (function () {
 
         // Create a sphere for the satellite
         satelliteData.mesh = BABYLON.Mesh.CreateSphere(satelliteData.name, 64, 5, scene);
-
         // Scale the satellite based on the parameters provided
         satelliteData.mesh.scaling = new BABYLON.Vector3(scaleX * 0.1, scaleX * 0.1, scaleX * 0.1);
 
@@ -228,10 +219,6 @@ export const world = (function () {
         // Añadir el evento de clic para mostrar la tarjeta
         addActionToCelestialBody(system[name.toLowerCase()].mesh, card);
 
-        // Añadir satélite si existe
-        if (child) {
-            addChildNode(child, system[name.toLowerCase()], child.semiMajorAxis, 0.3, 0.3, 0.3);
-        }
     };
 
 
@@ -270,12 +257,10 @@ export const world = (function () {
             dwarfPlanetsMeshes.push(system[elementData.name.toLowerCase()].mesh);
         }
     }
+
     /**
      * Obtiene y procesa los datos de los cuerpos celestes
      */
-    /**
- * Obtiene y procesa los datos de los cuerpos celestes
- */
     const fetchAndProcessPlanets = async function (type) {
         try {
             const response = await fetch('https://hocknas.pythonanywhere.com/trajectories');
@@ -287,11 +272,17 @@ export const world = (function () {
             // Limpiar la escena antes de añadir nuevos cuerpos celestes
             clearScene();
 
-            // Procesar según el tipo especificado
+            // Procesar planetas y renderizarlos en la escena
             if (type === 'planets') {
                 data.bodies.planets.forEach(planet => {
                     processElement(planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
+                    if (planet.child) {
+                        // Añadir el satélite solo cuando el planeta esté completamente renderizado
+                        addChildNode(planet.child, system[planet.name.toLowerCase()], 2, 0.7, 0.3, 0.3);
+                        console.log("intentando añadir" + planet.child.name)
+                    }
                 });
+
             } else if (type === 'pha') {
                 data.bodies.pha.forEach(pha => {
                     processElement(pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
@@ -305,6 +296,7 @@ export const world = (function () {
             showError(error);
         }
     };
+
 
     // Manejadores de eventos para los botones
     document.getElementById('showPlanets').addEventListener('click', () => fetchAndProcessPlanets('planets'));
