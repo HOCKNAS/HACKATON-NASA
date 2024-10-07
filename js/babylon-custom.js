@@ -138,6 +138,9 @@ export const world = (function () {
 
         // Begin the animation
         scene.beginAnimation(satelliteData.mesh, 0, numFrames, true);
+
+        addActionToCelestialBody(satelliteData.mesh,satelliteData.card );
+
     };
 
     /**
@@ -162,6 +165,8 @@ export const world = (function () {
         document.getElementById('cardTitle').innerText = card.title;
         document.getElementById('cardType').innerText = card.type;
         document.getElementById('cardDescription').innerText = card.description;
+        document.getElementById('cardurl').innerText = "https://science.nasa.gov/" + card.title.toLowerCase();
+        document.getElementById('cardurl').href = "https://science.nasa.gov/" + card.title.toLowerCase();
         document.getElementById('parrafo').style.display = 'none';
         infoCard.style.display = 'block';
     };
@@ -181,7 +186,7 @@ export const world = (function () {
      * Añade un planeta y su órbita al sistema
      */
     const addPlanetAndOrbit = function (elementData, orbitColor, diameterScale = 1) {
-        const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, child, card } = elementData;
+        const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, card } = elementData;
 
         // Definir propiedades del planeta
         const diameter = diameterScale; // Ajustar el diámetro según sea necesario

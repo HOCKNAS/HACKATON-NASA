@@ -22,6 +22,7 @@ function showInfo(info) {
         <h2 id="cardTitle"></h2>
         <h4 id="cardType"></h4>
         <p id="cardDescription"></p>
+        <a id="cardurl"></a >
     `;
 
     event.target.disabled = true;

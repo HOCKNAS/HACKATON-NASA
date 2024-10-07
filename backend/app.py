@@ -69,8 +69,13 @@ data = {
           "description": "The third planet from the Sun and the only known celestial body to support life."
         },
         "child" : {
-          "name": "moon"
-          } 
+          "name": "moon",
+          "card": {
+              "title": "Moon",
+              "type": "Satellite",
+              "description": "The Moon is Earth's only natural satellite and the fifth largest satellite in the Solar System."
+          }
+        }
       },
       {
         "name": "Mars",
