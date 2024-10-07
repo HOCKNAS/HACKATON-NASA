@@ -20,6 +20,10 @@
             <br>
             <!-- Sidebar with buttons and info box -->
             <div class="buttons">
+                <p class="blinking-text">
+                    To view the planets, dwarf planets, or Potentially Hazardous Asteroids (PHA), please click one of the buttons above.
+                </p>
+
                 <button id="showPlanets" class="outline-btn" onclick="showInfo('info1')">Planets</button>
                 <button id="showPHA" class="outline-btn" onclick="showInfo('info2')">PHA Potentially Hazardous Asteroid</button>
                 <button id="showDwarfs"class="outline-btn" onclick="showInfo('info3')">Dwarf Planets</button>
@@ -28,7 +32,7 @@
 
             </div>
             <div class="info-box" id="info-box">
-                <h3 id="parrafo">Haz clic en un botón para ver la información.</h3>
+                <h3 id="parrafo">Click a button to view the information.</h3>
                 <h2 id="cardTitle"></h2>
                 <h4 id="cardType"></h4>
                 <p id="cardDescription"></p>
@@ -41,7 +45,7 @@
 
     <!-- Cuadro de diálogo -->
     <div class="dialog" id="dialog">
-        <p>Usa el mouse para navegar en el orrery.</p>
+        <p>Use the mouse to rotate, zoom, and explore the 3D orrery.</p>
         <button onclick="closeDialog()">Cerrar</button>
     </div>
 

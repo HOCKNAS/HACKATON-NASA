@@ -68,3 +68,17 @@ body, html {
     border-radius: 5px;
     z-index: 100;
 }
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.blinking-text {
+    font-weight: bold;
+    font-style: italic;
+    background-color: yellow;
+    padding: 5px;
+    animation: blink 1s infinite;
+}
