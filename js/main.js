@@ -1,13 +1,14 @@
-// Importar los módulos del proyecto BabylonJS
+// Import the BabylonJS project module
 import { world } from './babylon-custom.js';
 
+// When the HTML document is fully loaded and parsed, execute the function
 window.addEventListener('DOMContentLoaded', function() {
-    // Inicializar la escena de BabylonJS
+    // Initialize the BabylonJS scene
     world.run();
 
-    // Ajustar el tamaño del lienzo cuando la ventana cambie de tamaño
+    // Add a listener to adjust the canvas size when the window is resized
     window.addEventListener('resize', function() {
+        // Resize the BabylonJS engine to fit the new window dimensions
         world.getEngine().resize();
     });
 });
-

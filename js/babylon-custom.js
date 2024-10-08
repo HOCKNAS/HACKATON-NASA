@@ -1,39 +1,47 @@
 export const world = (function () {
     let engine, canvas, scene, camera, galacticlight, skybox;
 
-    // Sistema de planetas inicial vacío
+    // Initial empty planetary system
     const system = {};
-    const SCALE_FACTOR = 10; // Ajustar la escala de distancia
+    const SCALE_FACTOR = 10; // Scale factor to adjust distance in the scene for visualization
 
-    const toggleCheckbox = document.getElementById('toggleLabels');
-    const showLabelsInitially = toggleCheckbox.checked;
-
+    // Camera type for configuring scene camera
     const cameraType = {
         ARCROTATE: 'arcrotate'
     };
 
     /**
-     * Muestra errores en la consola
+     * Displays errors in the console
+     * @param {string} errorMessage - The error message to display
      */
     const showError = function (errorMessage) {
         console.error(errorMessage);
     };
 
     /**
-     * Getter para el motor de BabylonJS (usado para el resizing)
+     * Getter for BabylonJS engine (used for resizing)
+     * @returns {BABYLON.Engine} - The current BabylonJS engine instance
      */
     const getEngine = function () {
         return engine;
     };
 
-    // Variable para almacenar las etiquetas
+    // Array to store labels for celestial bodies
     const labels = [];
 
+    /**
+     * Creates a label for a celestial body
+     * @param {string} bodyName - The name of the body
+     * @param {BABYLON.Mesh} bodyMesh - The mesh representing the body
+     * @param {object} card - Data to display on the information card
+     * @param {string} type - Type of celestial body (e.g., planet, PHA)
+     * @returns {BABYLON.GUI.Rectangle} - The created label rectangle
+     */
     const createLabelForBody = (bodyName, bodyMesh, card, type) => {
-        // Crear un plano GUI para la etiqueta
+        // Creates a full-screen GUI texture to render the label
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-        // Crear un rectángulo para la etiqueta
+        // Creates a rectangular GUI element for the label
         const labelRect = new BABYLON.GUI.Rectangle();
         labelRect.width = "60px";
         labelRect.height = "30px";
@@ -41,36 +49,36 @@ export const world = (function () {
         labelRect.color = "white";
         labelRect.thickness = 1;
         labelRect.background = "black";
-        labelRect.isPointerBlocker = true; // Hacer que la etiqueta sea interactiva
+        labelRect.isPointerBlocker = true; // Makes the label interactive
         advancedTexture.addControl(labelRect);
 
-        // Crear un texto para la etiqueta
+        // Creates a text block within the label rectangle
         const labelText = new BABYLON.GUI.TextBlock();
         labelText.text = bodyName;
         labelText.color = "white";
         labelText.fontSize = 12;
         labelRect.addControl(labelText);
 
-        // Posicionar la etiqueta en el cuerpo celeste
+        // Links the label to the celestial body mesh and offsets it for visibility
         labelRect.linkWithMesh(bodyMesh);
-        labelRect.linkOffsetY = -30; // Ajuste de posición en el eje Y
+        labelRect.linkOffsetY = -30; // Adjusts Y-axis position
 
-        // Añadir un evento de clic a la etiqueta
+        // Adds an on-click event to the label
         labelRect.onPointerDownObservable.add(function () {
-            // Mostrar la tarjeta de información del cuerpo celeste
+            // Displays the information card for the celestial body
             showCardInfo(type, card);
 
-            // Centrar la cámara en el objeto seleccionado
+            // Centers the camera on the selected body
             camera.setTarget(bodyMesh.getAbsolutePosition());
 
-            // Calcular un radio óptimo basado en el tamaño del cuerpo
+            // Calculates optimal camera radius based on body size
             const meshRadius = bodyMesh.getBoundingInfo().boundingSphere.radiusWorld;
-            const desiredRadius = Math.max(meshRadius * 3, 5); // Ajusta 5 como radio mínimo para evitar atravesar asteroides pequeños
+            const desiredRadius = Math.max(meshRadius * 3, 5); // Ensures a minimum radius for small objects
 
-            // Ajustar el radio mínimo para la cámara
-            camera.lowerRadiusLimit = desiredRadius; // Ajusta el factor multiplicativo según sea necesario
+            // Adjusts the camera's minimum radius to avoid collisions
+            camera.lowerRadiusLimit = desiredRadius; // Adjust multiplier as necessary
 
-            // Configurar la animación para acercar la cámara
+            // Configures an animation to smoothly zoom in the camera
             const animation = new BABYLON.Animation(
                 "cameraZoom",
                 "radius",
@@ -79,58 +87,65 @@ export const world = (function () {
                 BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
             );
 
-            // Definir los fotogramas clave de la animación
+            // Defines keyframes for the camera zoom animation
             const keys = [];
-            keys.push({ frame: 0, value: camera.radius }); // Comienza desde el valor actual del radio
-            keys.push({ frame: 60, value: desiredRadius }); // Termina en el radio deseado (acercamiento)
+            keys.push({ frame: 0, value: camera.radius }); // Starts at current radius
+            keys.push({ frame: 60, value: desiredRadius }); // Ends at desired radius
 
-            // Establecer los fotogramas clave
+            // Sets the keyframes for the animation
             animation.setKeys(keys);
 
-            // Aplicar la animación a la cámara
+            // Applies the animation to the camera
             camera.animations.push(animation);
 
-            // Iniciar la animación
+            // Starts the camera zoom animation
             scene.beginAnimation(camera, 0, 60, false);
 
-            // Guardar el objeto seleccionado para que la cámara lo siga
+            // Saves the selected object for camera tracking
             selectedObject = bodyMesh;
         });
 
-        // Agregar la etiqueta a la lista de etiquetas
+        // Adds the label to the labels array for later reference
         labels.push(labelRect);
-
         return labelRect;
     };
 
-
-
     /**
-     * Crea y retorna un material para un cuerpo celeste
+     * Creates and returns a material for a celestial body
+     * @param {string} name - The name of the material
+     * @param {string} mapPath - Path to the texture map
+     * @param {boolean} emissive - Determines if the material is emissive
+     * @returns {BABYLON.StandardMaterial} - The created material
      */
     const createMaterial = function (name, mapPath, emissive) {
         const material = new BABYLON.StandardMaterial(name, scene);
         const texturePath = 'img/textures/' + mapPath;
 
+        // Configures emissive or diffuse texture based on parameters
         if (emissive) {
             material.emissiveTexture = new BABYLON.Texture(texturePath, scene);
-            material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            material.diffuseColor = new BABYLON.Color3(0, 0, 0); // Darkens diffuse to enhance glow
         } else {
             material.diffuseTexture = new BABYLON.Texture(texturePath, scene);
         }
 
-        // Eliminar brillo especular
+        // Removes specular highlights to avoid shine
         material.specularColor = new BABYLON.Color3(0, 0, 0);
         return material;
     };
 
     /**
-     * Crea una órbita visual para un planeta
+     * Creates a visual orbit for a planet
+     * @param {string} planetName - The name of the planet
+     * @param {number} radius - The radius of the orbit
+     * @param {BABYLON.Color3} color - The color of the orbit
+     * @returns {BABYLON.LinesMesh} - The created orbit mesh
      */
     const createOrbit = function (planetName, radius, color) {
         const orbitPoints = [];
-        const orbitSegments = 64; // Definición del círculo con 64 segmentos
+        const orbitSegments = 64; // Defines circle with 64 segments for smoothness
 
+        // Calculates the points of the orbit circle
         for (let i = 0; i <= orbitSegments; i++) {
             const theta = (i / orbitSegments) * 2 * Math.PI;
             const x = radius * Math.cos(theta);
@@ -138,29 +153,32 @@ export const world = (function () {
             orbitPoints.push(new BABYLON.Vector3(x, 0, z));
         }
 
+        // Creates a lines mesh to represent the orbit
         const orbit = BABYLON.MeshBuilder.CreateLines(`${planetName}_orbit`, { points: orbitPoints }, scene);
-        orbit.color = color;
+        orbit.color = color; // Sets the orbit color
 
         return orbit;
     };
 
     /**
-     * Crea la escena de BabylonJS
+     * Creates the BabylonJS scene with default lighting and camera setup
+     * @param {string} type - The type of camera to use (arcrotate in this case)
+     * @returns {BABYLON.Scene} - The created scene
      */
     const createScene = function (type) {
-        // Crear la escena
+        // Initializes the BabylonJS scene
         scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        scene.clearColor = new BABYLON.Color3(0, 0, 0); // Sets background to black
 
-        // Crear la cámara
+        // Creates and configures the camera
         camera = new BABYLON.ArcRotateCamera('camera', 0, 0, 25, BABYLON.Vector3.Zero(), scene);
-        camera.attachControl(canvas, true);
+        camera.attachControl(canvas, true); // Enables user interaction
 
-        // Luz global
+        // Creates a global hemispheric light source
         galacticlight = new BABYLON.HemisphericLight('galacticlight', new BABYLON.Vector3(0, 1, 0), scene);
-        galacticlight.intensity = 0.5;
+        galacticlight.intensity = 0.5; // Sets light intensity
 
-        // Skybox
+        // Creates a skybox to represent space background
         skybox = BABYLON.Mesh.CreateBox('skybox', 1000, scene);
         const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
         skyboxMaterial.backFaceCulling = false;
@@ -172,22 +190,32 @@ export const world = (function () {
         return scene;
     };
 
+    /**
+     * Adds a child satellite to a planet node
+     * @param {string} type - The type of celestial body (e.g., satellite)
+     * @param {object} satelliteData - Data for the satellite
+     * @param {object} parentPlanet - The parent planet object
+     * @param {number} distanceFactor - Distance from the parent planet
+     * @param {number} scaleX - Scale factor for X dimension
+     * @param {number} scaleY - Scale factor for Y dimension
+     * @param {number} scaleZ - Scale factor for Z dimension
+     */
     const addChildNode = function (type, satelliteData, parentPlanet, distanceFactor, scaleX, scaleY, scaleZ) {
-        // Create a sphere for the satellite
+        // Creates a sphere mesh for the satellite
         satelliteData.mesh = BABYLON.Mesh.CreateSphere(satelliteData.name, 64, 5, scene);
-        // Scale the satellite based on the parameters provided
+        // Scales the satellite mesh based on the provided scale factors
         satelliteData.mesh.scaling = new BABYLON.Vector3(scaleX * 0.1, scaleX * 0.1, scaleX * 0.1);
 
-        // Create and apply the material for the satellite
+        // Creates and applies a material to the satellite
         satelliteData.mesh.material = createMaterial(satelliteData.name, `${satelliteData.name.toLowerCase()}.jpg`, false);
 
-        // Set the initial position of the satellite relative to its parent
+        // Sets the initial position of the satellite relative to its parent
         satelliteData.mesh.position = new BABYLON.Vector3(distanceFactor, 0, 0);
 
-        // Make the satellite a child of the parent planet so it orbits around it
+        // Makes the satellite a child of the parent planet, enabling relative orbit
         satelliteData.mesh.parent = parentPlanet.mesh;
 
-        // Create a path animation to simulate the orbit around the parent
+        // Creates a circular orbit animation for the satellite
         const orbitAnimation = new BABYLON.Animation(
             `${satelliteData.name}Orbit`,
             "position",
@@ -196,53 +224,69 @@ export const world = (function () {
             BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
         );
 
-        // Define the keyframes for the orbit (circular path)
+        // Defines the keyframes for the orbit animation
         const keyFrames = [];
-        const orbitRadius = distanceFactor; // Set the radius of the orbit
-        const numFrames = 360; // Number of frames for one full orbit
+        const orbitRadius = distanceFactor; // Orbit radius
+        const numFrames = 360; // Frames for one complete orbit
 
+        // Calculates circular path around parent planet
         for (let frame = 0; frame <= numFrames; frame++) {
             const angle = (frame / numFrames) * 2 * Math.PI; // Angle in radians
             const x = orbitRadius * Math.cos(angle); // X position
             const z = orbitRadius * Math.sin(angle); // Z position
             keyFrames.push({
                 frame: frame,
-                value: new BABYLON.Vector3(x, 0, z), // Orbit on the X-Z plane
+                value: new BABYLON.Vector3(x, 0, z), // Orbit on X-Z plane
             });
         }
 
-        // Set the keyframes to the animation
+        // Sets the keyframes for the animation
         orbitAnimation.setKeys(keyFrames);
 
-        // Attach the animation to the satellite's mesh
+        // Attaches the orbit animation to the satellite mesh
         satelliteData.mesh.animations.push(orbitAnimation);
 
-        // Begin the animation
+        // Begins the orbit animation
         scene.beginAnimation(satelliteData.mesh, 0, numFrames, true);
 
+        // Adds interactivity to the celestial body
         addActionToCelestialBody(type, satelliteData.mesh, satelliteData.card);
 
+        // Creates and attaches a label for the satellite
         const label = createLabelForBody(satelliteData.name, satelliteData.mesh, satelliteData.card, type);
-        label.isVisible = showLabelsInitially;
+
+        label.isVisible = document.getElementById('toggleLabels').checked;
+       
     };
 
     /**
-     * Crea un nodo padre con inclinación para la órbita y el planeta
+     * Creates a parent node with inclination for the orbit and planet
+     * @param {object} planetData - Data of the planet
+     * @param {number} orbitRadius - Radius of the orbit
+     * @param {number} inclination - Orbital inclination in degrees
+     * @param {BABYLON.Color3} orbitColor - Color of the visual orbit
+     * @returns {BABYLON.TransformNode} - The created parent node for orbit
      */
     const createOrbitAndParentNode = function (planetData, orbitRadius, inclination, orbitColor) {
-        // Crear el nodo padre para aplicar la inclinación
+        // Creates a parent node to apply inclination
         const orbitParentNode = new BABYLON.TransformNode(`${planetData.name}_orbit_parent`, scene);
 
-        // Crear la órbita visual como hijo del nodo
+        // Creates a visual orbit as a child of the parent node
         createOrbit(planetData.name, orbitRadius, orbitColor).parent = orbitParentNode;
 
-        // Aplicar la inclinación al nodo padre
+        // Applies the inclination to the parent node (rotates on the X-axis)
         orbitParentNode.rotation.x = inclination * (Math.PI / 180);
 
         return orbitParentNode;
     };
 
+    /**
+     * Displays information on the interactive card
+     * @param {string} type - Type of celestial body
+     * @param {object} card - Data to be displayed on the card
+     */
     const showCardInfo = (type, card) => {
+        // Grabs the HTML elements for card display and updates them with the body info
         const infoCard = document.getElementById('info-box');
         document.getElementById('cardTitle').innerText = card.title;
         document.getElementById('cardType').innerText = card.type;
@@ -255,27 +299,33 @@ export const world = (function () {
         infoCard.style.display = 'block';
     };
 
+    /**
+     * Adds interactivity (click events) to a celestial body
+     * @param {string} type - Type of celestial body
+     * @param {BABYLON.Mesh} mesh - The mesh of the body
+     * @param {object} card - Data to display on the card
+     */
     const addActionToCelestialBody = (type, mesh, card) => {
+        // Initializes an action manager for the mesh
         mesh.actionManager = new BABYLON.ActionManager(scene);
 
-
-        // Evento al hacer clic
+        // Registers an on-click event for the mesh
         mesh.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
+                // Displays the information card for the celestial body
                 showCardInfo(type, card);
 
-
-                // Centrar la cámara en el objeto seleccionado
+                // Centers the camera on the selected mesh
                 camera.setTarget(mesh.getAbsolutePosition());
 
-                // Calcular un radio óptimo basado en el tamaño del cuerpo
+                // Calculates optimal camera radius based on body size
                 const meshRadius = mesh.getBoundingInfo().boundingSphere.radiusWorld;
-                const desiredRadius = Math.max(meshRadius * 3, 5); // Ajusta 5 como radio mínimo para evitar atravesar asteroides pequeños
+                const desiredRadius = Math.max(meshRadius * 3, 5); // Ensures a minimum radius for small objects
 
-                // Ajustar el radio mínimo para la cámara
+                // Sets the camera's lower radius limit
                 camera.lowerRadiusLimit = desiredRadius;
 
-                // Configurar la animación para acercar la cámara
+                // Configures the camera zoom animation
                 const animation = new BABYLON.Animation(
                     "cameraZoom",
                     "radius",
@@ -284,40 +334,44 @@ export const world = (function () {
                     BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
                 );
 
-                // Definir los fotogramas clave de la animación
+                // Defines keyframes for the zoom animation
                 const keys = [];
-                keys.push({ frame: 0, value: camera.radius }); // Comienza desde el valor actual del radio
-                keys.push({ frame: 60, value: desiredRadius }); // Termina en el radio deseado (acercamiento)
+                keys.push({ frame: 0, value: camera.radius }); // Starts at current radius
+                keys.push({ frame: 60, value: desiredRadius }); // Ends at desired radius
 
-                // Establecer los fotogramas clave
+                // Sets the keyframes to the animation
                 animation.setKeys(keys);
 
-                // Aplicar la animación a la cámara
+                // Applies the animation to the camera
                 camera.animations.push(animation);
 
-                // Iniciar la animación
+                // Starts the zoom animation
                 scene.beginAnimation(camera, 0, 60, false);
 
-                // Guardar el objeto seleccionado para que la cámara lo siga
+                // Saves the selected mesh for camera tracking
                 selectedObject = mesh;
             })
         );
     };
 
     /**
-     * Añade un planeta y su órbita al sistema
+     * Adds a planet and its orbit to the system
+     * @param {string} type - Type of celestial body (e.g., planet)
+     * @param {object} elementData - Data for the celestial body
+     * @param {BABYLON.Color3} orbitColor - Color for the orbit
+     * @param {number} diameterScale - Scale for the body's diameter
      */
     const addPlanetAndOrbit = function (type, elementData, orbitColor, diameterScale = 1) {
         const { name, semiMajorAxis, orbitalInclination, siderealPeriod, meanAnomalyAtEpoch, card } = elementData;
 
-        // Definir propiedades del planeta
-        const diameter = diameterScale; // Ajustar el diámetro según sea necesario
-        const orbitRadius = semiMajorAxis * SCALE_FACTOR;
+        // Defines properties for the planet
+        const diameter = diameterScale; // Adjust diameter as needed
+        const orbitRadius = semiMajorAxis * SCALE_FACTOR; // Scales semi-major axis for visualization
 
-        // Crear el nodo padre con inclinación para la órbita y el planeta
+        // Creates a parent node with inclination for the orbit and planet
         const orbitParentNode = createOrbitAndParentNode(elementData, orbitRadius, orbitalInclination, orbitColor);
 
-        // Crear el planeta como hijo del nodo de la órbita
+        // Creates the planet as a child of the orbit node
         system[name.toLowerCase()] = {
             mesh: BABYLON.Mesh.CreateSphere(name, 16, diameter, scene),
             name: name.toLowerCase(),
@@ -326,66 +380,73 @@ export const world = (function () {
             diameter,
             orbitParentNode,
             rotation: {
-                speed: 0.01, // Ajustar la velocidad de rotación si es necesario
+                speed: 0.01, // Adjusts the speed of self-rotation
                 angle: 0
             },
             orbit: {
                 radius: orbitRadius,
-                speed: (1 / siderealPeriod) * 0.001, // Ajustar la velocidad orbital para la visualización
-                angle: meanAnomalyAtEpoch * (Math.PI / 180) // Convertir el ángulo a radianes
+                speed: (1 / siderealPeriod) * 0.001, // Adjusts orbit speed for visualization
+                angle: meanAnomalyAtEpoch * (Math.PI / 180) // Converts initial angle to radians
             }
         };
 
-        // Aplicar el material al planeta
+        // Applies the material to the planet
         if (name.toLowerCase() === "sun") {
+            // For the Sun, uses an emissive texture and point light to simulate glowing
             system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, true);
             const sunLight = new BABYLON.PointLight('sunlight', BABYLON.Vector3.Zero(), scene);
-            sunLight.intensity = 2.2; // Ajusta la intensidad según lo necesario
-            sunLight.diffuse = new BABYLON.Color3(1, 0.9, 0.7); // Color cálido para simular la luz solar
-            sunLight.position = new BABYLON.Vector3(0, 0, 0); // Reemplaza x, y, z con las coordenadas necesarias
+            sunLight.intensity = 2.2; // Adjusts light intensity
+            sunLight.diffuse = new BABYLON.Color3(1, 0.9, 0.7); // Warm color to simulate sunlight
+            sunLight.position = new BABYLON.Vector3(0, 0, 0);
         } else {
+            // For other planets, uses a standard diffuse material
             system[name.toLowerCase()].mesh.material = createMaterial(name, `${name.toLowerCase()}.jpg`, false);
         }
 
-        // Posicionar el planeta en su órbita y hacerlo hijo del nodo padre
+        // Positions the planet in its orbit and makes it a child of the orbit node
         system[name.toLowerCase()].mesh.position.x = orbitRadius;
         system[name.toLowerCase()].mesh.parent = orbitParentNode;
 
-        // Añadir el evento de clic para mostrar la tarjeta
+        // Adds interactivity to the planet mesh
         addActionToCelestialBody(type, system[name.toLowerCase()].mesh, card);
 
+        // Creates a label for the planet and sets its visibility
         const label = createLabelForBody(name, system[name.toLowerCase()].mesh, card, type);
-        label.isVisible = showLabelsInitially;
+        label.isVisible = document.getElementById('toggleLabels').checked;;
 
     };
 
-    // Variables para almacenar los cuerpos celestes según su tipo
+    // Arrays to store meshes of celestial bodies based on their type
     let normalPlanetsMeshes = [];
     let phaMeshes = [];
     let dwarfPlanetsMeshes = [];
 
     /**
-     * Función para limpiar la escena
+     * Clears the scene of all celestial bodies and labels
      */
     function clearScene() {
-        // Oculta todos los cuerpos celestes existentes
+        // Disposes all existing celestial body meshes
         normalPlanetsMeshes.forEach(mesh => mesh.dispose());
         phaMeshes.forEach(mesh => mesh.dispose());
         dwarfPlanetsMeshes.forEach(mesh => mesh.dispose());
 
-        // Vacía los arrays
+        // Clears the arrays
         normalPlanetsMeshes = [];
         phaMeshes = [];
         dwarfPlanetsMeshes = [];
     }
 
     /**
-     * Procesar un elemento y agregarlo a la escena
+     * Processes a celestial element and adds it to the scene
+     * @param {string} type - Type of celestial body
+     * @param {object} elementData - Data of the celestial body
+     * @param {BABYLON.Color3} color - Color for the orbit
+     * @param {number} diameterScale - Scale for the body's diameter
      */
     function processElement(type, elementData, color, diameterScale) {
         addPlanetAndOrbit(type, elementData, color, diameterScale);
 
-        // Agregar el mesh al array correspondiente
+        // Adds the mesh to the appropriate array based on type
         if (type === 'planet') {
             normalPlanetsMeshes.push(system[elementData.name.toLowerCase()].mesh);
         } else if (type === 'pha') {
@@ -396,36 +457,37 @@ export const world = (function () {
     }
 
     /**
-     * Obtiene y procesa los datos de los cuerpos celestes
+     * Fetches and processes data for celestial bodies
+     * @param {string} type - The type of bodies to fetch (e.g., planets, pha)
      */
     const fetchAndProcessPlanets = async function (type) {
         try {
             const response = await fetch('https://hocknas.pythonanywhere.com/trajectories');
             if (!response.ok) {
-                throw new Error(`Error al obtener los datos: ${response.status}`);
+                throw new Error(`Failed to fetch data: ${response.status}`);
             }
             const data = await response.json();
 
-            // Limpiar la escena antes de añadir nuevos cuerpos celestes
+            // Clears the scene before adding new celestial bodies
             clearScene();
 
-            // Procesar planetas y renderizarlos en la escena
+            // Processes planets and renders them in the scene
             if (type === 'planets') {
                 data.bodies.planets.forEach(planet => {
-                    processElement(type, planet, new BABYLON.Color3(1, 1, 1), 1.3); // Color blanco para planetas
+                    processElement(type, planet, new BABYLON.Color3(1, 1, 1), 1.3); // White color for planets
                     if (planet.child) {
-                        // Añadir el satélite solo cuando el planeta esté completamente renderizado
+                        // Adds satellite when the planet is fully rendered
                         addChildNode(type, planet.child, system[planet.name.toLowerCase()], 2, 0.7, 0.3, 0.3);
                     }
                 });
 
             } else if (type === 'pha') {
                 data.bodies.pha.forEach(pha => {
-                    processElement(type, pha, new BABYLON.Color3(1, 0, 0), 0.1); // Color rojo y tamaño reducido para PHA
+                    processElement(type, pha, new BABYLON.Color3(1, 0, 0), 0.1); // Red color and reduced size for PHA
                 });
             } else if (type === 'dwarf_planets') {
                 data.bodies.dwarf_planets.forEach(dwarf => {
-                    processElement(type, dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Color azul para planetas enanos
+                    processElement(type, dwarf, new BABYLON.Color3(0, 0, 1), 1.0); // Blue color for dwarf planets
                 });
             }
         } catch (error) {
@@ -433,29 +495,29 @@ export const world = (function () {
         }
     };
 
-    // Manejadores de eventos para los botones
+    // Event handlers for buttons to fetch and display different types of celestial bodies
     document.getElementById('showPlanets').addEventListener('click', () => fetchAndProcessPlanets('planets'));
     document.getElementById('showPHA').addEventListener('click', () => fetchAndProcessPlanets('pha'));
     document.getElementById('showDwarfs').addEventListener('click', () => fetchAndProcessPlanets('dwarf_planets'));
 
+    // Event handler for toggling label visibility
     document.getElementById('toggleLabels').addEventListener('change', function (e) {
         const showLabels = e.target.checked;
 
-        // Mostrar u ocultar etiquetas según el estado del checkbox
+        // Toggles label visibility based on checkbox state
         labels.forEach(label => {
             label.isVisible = showLabels;
         });
-
-
     });
+
     /**
-     * Actualiza las posiciones de todos los cuerpos celestes en el sistema
+     * Updates positions of all celestial bodies in the system
      */
     const updateCelestialPositions = function () {
         for (let key in system) {
             const planet = system[key];
 
-            // Actualizar posición de la órbita
+            // Updates the orbit position
             if (planet.orbit.angle !== 0) {
                 const x = planet.orbit.radius * Math.cos(planet.orbit.angle);
                 const z = planet.orbit.radius * Math.sin(planet.orbit.angle);
@@ -463,34 +525,36 @@ export const world = (function () {
                 planet.mesh.position.x = x;
                 planet.mesh.position.z = z;
 
-                // Actualizar el ángulo orbital
+                // Updates orbital angle based on speed
                 planet.orbit.angle += planet.orbit.speed;
             }
 
-            // Rotación del planeta sobre su propio eje
+            // Rotates the planet on its own axis
             planet.mesh.rotate(new BABYLON.Vector3(0, 1, 0), planet.rotation.speed);
         }
     };
 
     /**
-     * Inicializa el canvas, motor, escena y bucle de render
+     * Initializes the canvas, engine, scene, and render loop
      */
     const init = function () {
         try {
             canvas = document.getElementById('renderCanvas');
-            if (!canvas) showError('Canvas no encontrado');
+            if (!canvas) showError('Canvas not found');
 
+            // Initializes the BabylonJS engine
             engine = new BABYLON.Engine(canvas, true);
             scene = createScene(cameraType.ARCROTATE);
 
-            // Animación del sistema
+            // Animation for updating celestial positions
             engine.scenes[0].beforeRender = updateCelestialPositions;
 
+            // Starts the render loop
             engine.runRenderLoop(function () {
                 if (scene) scene.render();
             });
 
-            // Llama a la función para obtener y procesar los planetas del endpoint
+            // Fetches and processes initial planets from the endpoint
             fetchAndProcessPlanets();
 
         } catch (e) {
@@ -498,7 +562,7 @@ export const world = (function () {
         }
     };
 
-    // Método público para iniciar el proyecto
+    // Public method to start the simulation
     const run = function () {
         init();
     };

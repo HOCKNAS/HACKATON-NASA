@@ -1,40 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Character encoding and viewport configuration for responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link to the external CSS file for styles -->
     <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Page title -->
     <title>AstroDynamics</title>
 </head>
 <body>
-    <!-- Video de fondo -->
+    <!-- Background video element with autoplay, muted, and looping attributes -->
     <video autoplay muted loop id="video-fondo">
         <source src="video/background.mp4" type="video/mp4">
+        <!-- Fallback text for browsers that do not support the video tag -->
         Tu navegador no soporta la etiqueta de video.
     </video>
     
-    <!-- Contenido existente de tu página -->
+    <!-- Main content of the page -->
     <div class="contenido">
         <header>
+            <!-- Title with a 3D effect (likely styled in CSS) -->
             <h1 class="titulo-3d">AstroDynamics</h1>
-            <!-- Enlace a GitHub -->
+            
+            <!-- Link to GitHub project with an icon -->
             <a href="https://github.com/HOCKNAS/HACKATON-NASA" target="_blank" class="github-link">
                 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="github-icon">
                 View on GitHub
             </a>
         </header>
 
-        <!-- Nuevo apartado "Jugar" -->
+        <!-- "Play" section for accessing the orrery and trivia game -->
         <section id="jugar">
-            <h2></h2>
+            <h2></h2> <!-- Placeholder heading; consider adding text for better structure -->
             <div id="opciones">
-               <a href="orrery.html"><button class="boton-3d" id="btn-orrery">Virtual Orrery</button></a> 
+               <!-- Link to a virtual orrery page -->
+               <a href="orrery.html"><button class="boton-3d" id="btn-orrery">Virtual Orrery</button></a>
+               <!-- Button to trigger the trivia game defined in JavaScript -->
                <button class="boton-3d" id="btn-trivia">Survey Game</button>
             </div>
+            <!-- Container for rendering the trivia game dynamically -->
             <div id="juego"></div>
         </section>
     </div>
 
+    <!-- External JavaScript file for functionality (e.g., trivia game and other interactive elements) -->
     <script src="js/script.js"></script>
 </body>
 </html>

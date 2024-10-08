@@ -1,42 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta information for character encoding and viewport responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link to the external stylesheet for the orrery -->
     <link rel="stylesheet" href="css/orrery.css">
+    
+    <!-- Title of the page -->
     <title>AstroDynamics Orrery</title>
-    <!-- Include Babylon.js -->
+    
+    <!-- Including Babylon.js and its GUI library for 3D rendering and UI -->
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
 </head>
 <body>
     
+    <!-- Main container for the orrery and the sidebar -->
     <div class="main-container">
         
+        <!-- Sidebar section containing navigation and controls -->
         <div class="sidebar">
-            <!-- Barra de navegación -->
+            
+            <!-- Navigation bar linking back to the home page -->
             <div class="navbar">
-                <a href="index.html">← Return to Home</a> <!-- Modificar aquí para que apunte a la página principal -->
+                <a href="index.html">← Return to Home</a> <!-- Link to the main page -->
             </div>
             <br>
-            <!-- Sidebar with buttons and info box -->
+            
+            <!-- Sidebar with control buttons and an info box -->
             <div class="buttons">
                 <p class="blinking-text">
                     To view the planets, dwarf planets, or Potentially Hazardous Asteroids (PHA), please click one of the buttons above.
                 </p>
 
+                <!-- Buttons to show different types of celestial objects -->
                 <button id="showPlanets" class="outline-btn" onclick="showInfo('info1')">Planets, Sun and Moon</button>
                 <button id="showPHA" class="outline-btn" onclick="showInfo('info2')">PHA Potentially Hazardous Asteroid</button>
-                <button id="showDwarfs"class="outline-btn" onclick="showInfo('info3')">Dwarf Planets</button>
+                <button id="showDwarfs" class="outline-btn" onclick="showInfo('info3')">Dwarf Planets</button>
 
+                <!-- Toggle for showing/hiding labels on celestial bodies -->
                 <label for="toggleLabels" class="toggle-container">
                     <a>Show Labels</a> 
-                    <input type="checkbox" id="toggleLabels">
+                    <input type="checkbox" id="toggleLabels" >
                 </label>
 
+                <!-- Button to clear the canvas (reloads the page) -->
                 <button id="clear" onClick="window.location.reload();">Clear</button>
 
             </div>
+
+            <!-- Info box for displaying details of the selected celestial body -->
             <div class="info-box" id="info-box">
                 <h3 id="parrafo">Click a button to view the information.</h3>
                 <h2 id="cardTitle"></h2>
@@ -47,16 +62,17 @@
 
         </div>
 
+        <!-- Canvas element where the 3D orrery will be rendered by Babylon.js -->
         <canvas id="renderCanvas"></canvas>
     </div>
 
-    <!-- Cuadro de diálogo -->
+    <!-- Dialog box to provide instructions on how to interact with the orrery -->
     <div class="dialog" id="dialog">
         <p>Use the mouse to rotate, zoom, and explore the 3D orrery.</p>
         <button onclick="closeDialog()">Close</button>
     </div>
 
-    <!-- Include your custom scripts -->
+    <!-- Importing custom scripts for the orrery and Babylon.js configuration -->
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/babylon-custom.js"></script>
     <script src="js/orrery.js"></script>

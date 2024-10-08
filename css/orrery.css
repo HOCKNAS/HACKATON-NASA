@@ -1,129 +1,211 @@
+/* 
+  Resetting body and html margins, padding, and setting to full width/height
+  to allow flexible layout. Also preventing overflow and setting up for flex layout.
+*/
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    display: flex;
+    overflow: hidden; /* Prevents scrolling */
+    display: flex; /* Flex layout to allow children to share space */
 }
 
+/* 
+  Main container for sidebar and canvas; uses flexbox to align elements horizontally.
+*/
 .main-container {
     display: flex;
     width: 100%;
     height: 100%;
 }
 
+/* 
+  Sidebar with fixed width, vertical layout, and shadow for visual separation.
+*/
 .sidebar {
     flex: 0 0 250px; /* Fixed width for sidebar */
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Light background */
     padding: 10px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Subtle shadow for separation */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /* Ensures spacing between elements */
 }
 
+/* 
+  Container for buttons within the sidebar.
+*/
 .buttons {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Space between buttons and other elements */
 }
 
-.outline-btn {
-    width: 100%;
-    margin: 5px 0;
+/* 
+  General button styling for both outline and clear buttons. 
+  Ensures they are full-width, well-padded, and have hover and click effects.
+*/
+.outline-btn, #clear {
+    width: 100%; /* Full width */
+    margin: 5px 0; /* Space between buttons */
     padding: 10px;
-    cursor: pointer;
-    border: 1px solid #333;
-    background: #fff;
+    cursor: pointer; /* Changes cursor on hover */
+    border: 1px solid #333; /* Thin border for outline */
+    background: #fff; /* White background */
+    transition: all 0.3s ease; /* Smooth transitions on hover/click */
 }
 
-/* Estilo para el contenedor del toggle */
+/* 
+  Hover and active state styling for outline and clear buttons.
+  Changes background and border color for visual feedback.
+*/
+.outline-btn:hover, #clear:hover {
+    background-color: #4A90E2; /* Light blue background */
+    color: #fff; /* White text */
+    border-color: #357ABD; /* Darker border */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Deeper shadow */
+}
+
+.outline-btn:active, #clear:active {
+    background-color: #357ABD; /* Dark blue for active state */
+    border-color: #2C6FA3; /* Darker border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Slightly reduced shadow */
+}
+
+/* 
+  Container for the toggle switch and its label, styled to appear as a button.
+*/
 .toggle-container {
     display: flex;
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-    gap: 10px;
-    padding: 15px;
-    cursor: pointer;
-    border: 2px solid #4A90E2;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    color: #4A90E2;
-    user-select: none; /* Evitar la selección del texto al hacer clic */
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    gap: 10px; /* Space between label and checkbox */
+    padding: 15px; /* Internal spacing */
+    cursor: pointer; /* Pointer cursor for interactive feel */
+    border: 2px solid #4A90E2; /* Blue border */
+    background: #fff; /* White background */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: all 0.3s ease; /* Smooth hover/click transitions */
+    color: #4A90E2; /* Blue text color */
+    user-select: none; /* Prevents text selection */
 }
 
-/* Ajustar el tamaño del checkbox */
+/* 
+  Increase checkbox size for better user experience.
+*/
 .toggle-container input[type="checkbox"] {
     width: 24px;
     height: 24px;
-    cursor: pointer;
+    cursor: pointer; /* Pointer cursor for interactivity */
 }
 
-/* Efecto de hover */
+/* 
+  Hover, active, and focus styles for toggle button container.
+  Provides visual feedback on interaction.
+*/
 .toggle-container:hover {
-    background: #4A90E2;
-    color: #fff;
-    border-color: #357ABD;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    background: #4A90E2; /* Blue background */
+    color: #fff; /* White text */
+    border-color: #357ABD; /* Darker border */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Elevated shadow */
 }
 
-/* Efecto de clic */
 .toggle-container:active {
-    background: #357ABD;
-    border-color: #2C6FA3;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background: #357ABD; /* Darker blue background on click */
+    border-color: #2C6FA3; /* Even darker border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
 }
 
-/* Efecto de foco para accesibilidad */
+/* 
+  Focus style for accessibility, adding an outline to show focus state.
+*/
 .toggle-container:focus-within {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.4);
+    outline: none; /* Removes default outline */
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.4); /* Blue glow for focus */
 }
 
+/* 
+  Styling for the information display box.
+  Provides padding, rounded corners, and shadow for visual clarity.
+*/
 .info-box {
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    flex-grow: 1;
+    padding: 20px; /* Space inside the box */
+    background-color: #fff; /* White background */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Subtle shadow */
+    flex-grow: 1; /* Allows it to grow within its container */
+    font-size: 1em; /* Ensures readable font size */
+    line-height: 1.5; /* Increases spacing between lines for readability */
 }
 
-#clear {
-    margin-top: 20px;
-    padding: 10px;
-    cursor: pointer;
-    border: 1px solid #333;
-    background: #fff;
-}
-
+/* 
+  Canvas area for rendering 3D content.
+  Ensures it takes up available space next to the sidebar.
+*/
 #renderCanvas {
-    flex-grow: 1;
-    width: calc(100% - 250px); /* Subtract the width of the sidebar */
-    height: 100%;
+    flex-grow: 1; /* Allows canvas to fill remaining space */
+    width: calc(100% - 250px); /* Subtracts sidebar width */
+    height: 100%; /* Full height */
+    overflow: hidden; /* Prevents overflow */
 }
 
+/* 
+  Styling for the fixed dialog box with shadow and rounded corners.
+  Positioned in the top right corner.
+*/
 .dialog {
-    position: fixed;
+    position: fixed; /* Fixes dialog to the viewport */
     top: 20px;
     right: 20px;
-    background: #fff;
+    background: #fff; /* White background */
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    border-radius: 5px;
-    z-index: 100;
+    border: 2px solid #4A90E2; /* Blue border for emphasis */
+    box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Dark shadow for visibility */
+    border-radius: 5px; /* Rounded corners */
+    z-index: 100; /* Ensures it's above other content */
+    transition: all 0.3s ease-in-out; /* Smooth transition for dynamic changes */
 }
 
+/* 
+  Blinking text animation keyframes and styling.
+  Provides a "blinking" effect by changing opacity over time.
+*/
 @keyframes blink {
     0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
+    50% { opacity: 0.5; } /* Partially hides text */
+    100% { opacity: 1; } /* Restores full visibility */
 }
 
 .blinking-text {
     font-weight: bold;
     font-style: italic;
-    background-color: yellow;
-    padding: 5px;
-    animation: blink 1s infinite;
+    background-color: yellow; /* Yellow background to stand out */
+    padding: 5px; /* Internal padding */
+    animation: blink 2s infinite; /* Infinite blinking effect */
+}
+
+/* 
+  Responsive design for smaller screens.
+  Adjusts sidebar width and canvas layout for better display on mobile devices.
+*/
+@media (max-width: 768px) {
+    .sidebar {
+        flex: 0 0 200px; /* Reduces sidebar width */
+    }
+    #renderCanvas {
+        width: calc(100% - 200px); /* Adjusts canvas width accordingly */
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        flex: 0 0 100%; /* Full width for sidebar on small screens */
+        height: 150px; /* Sets height for horizontal layout */
+        flex-direction: row; /* Horizontal layout */
+        overflow-x: scroll; /* Enables horizontal scrolling if needed */
+    }
+    #renderCanvas {
+        width: 100%; /* Full width for canvas */
+        height: calc(100% - 150px); /* Adjusts height based on sidebar */
+    }
 }

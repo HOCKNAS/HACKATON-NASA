@@ -1,100 +1,104 @@
-/* Video de fondo */
+/* Video Background Styling */
 #video-fondo {
-    position: fixed;
+    position: fixed; /* Fixes the video in the background */
     top: 0;
     left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    z-index: -1;
-    object-fit: cover;
+    min-width: 100%; /* Ensures the video covers the full width */
+    min-height: 100%; /* Ensures the video covers the full height */
+    z-index: -1; /* Places the video behind other content */
+    object-fit: cover; /* Ensures the video covers the viewport proportionately */
+    pointer-events: none; /* Prevents the video from interfering with user interactions */
 }
 
-/* Contenido sobre el video */
+/* Content Over the Video Background */
 .contenido {
-    position: relative;
-    z-index: 1;
-    color: white;
-    text-align: center;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: relative; /* Allows layering over the video */
+    z-index: 1; /* Places content above the video */
+    color: white; /* Sets text color for better visibility */
+    text-align: center; /* Centers all text within the content */
+    height: 100vh; /* Full height of the viewport */
+    display: flex; /* Uses Flexbox for easy alignment */
+    flex-direction: column; /* Arranges items vertically */
+    align-items: center; /* Horizontally centers items */
+    justify-content: center; /* Vertically centers items */
+    padding: 20px; /* Adds spacing around content for smaller screens */
 }
 
-/* Título con efecto 3D */
+/* 3D Text Effect for the Title */
 .titulo-3d {
-    font-size: 7em;
-    color: #fff;
-    text-shadow: 2px 2px 0 #e7df0e, 4px 4px 0 #3218f2, 6px 6px 0 #f10e0e;
-    font-family: 'Verdana', sans-serif;
-    margin-bottom: 20px;
+    font-size: 7vw; /* Responsive text size based on viewport width */
+    color: #fff; /* White text for better contrast */
+    text-shadow: 2px 2px 0 #e7df0e, 4px 4px 0 #3218f2, 6px 6px 0 #f10e0e; /* 3D effect using multiple shadows */
+    font-family: 'Verdana', sans-serif; /* Sets the font style */
+    margin-bottom: 20px; /* Spacing below the title */
 }
 
-/* Sección "Jugar" */
+/* Section for "Play" Options */
 #jugar {
-    margin-top: 40px;
-    text-align: center;
+    margin-top: 40px; /* Space above the section */
+    text-align: center; /* Centers all content within this section */
 }
 
-/* Botones con efecto 3D */
-#opciones button {
-    margin: 10px;
-    padding: 15px 25px;
-    font-size: 1.2em;
-    cursor: pointer;
-    background: linear-gradient(145deg, #00aaff, #005577);
-    border: none;
-    border-radius: 15px;
-    color: white;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 5px 5px 10px #000000, -5px -5px 10px #333333;
-    transition: all 0.3s ease;
+/* Buttons with 3D Hover Effects */
+#opciones button, #answers button {
+    margin: 10px; /* Space between buttons */
+    padding: 15px 25px; /* Padding for a better clickable area */
+    min-width: 150px; /* Minimum width for mobile usability */
+    font-size: 1.4em; /* Increased font size for readability */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    background: linear-gradient(145deg, #00aaff, #005577); /* Creates a gradient background */
+    border: none; /* Removes default button border */
+    border-radius: 15px; /* Rounded corners for modern look */
+    color: white; /* Button text color */
+    font-family: 'Arial', sans-serif; /* Sets button font style */
+    box-shadow: 5px 5px 10px #000000, -5px -5px 10px #333333; /* 3D effect using box shadows */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transition on hover */
 }
 
-#opciones-juegos button:hover {
-    transform: translateY(-5px);
-    box-shadow: 10px 10px 20px #000000, -10px -10px 20px #333333;
+/* Hover Effect for Buttons */
+#opciones button:hover, #answers button:hover {
+    transform: translateY(-5px); /* Moves button up slightly */
+    box-shadow: 10px 10px 20px #000000, -10px -10px 20px #333333; /* Enhances shadow for deeper effect */
 }
 
-
-/* Botones con efecto 3D */
-#answers button {
-    margin: 10px;
-    padding: 15px 25px;
-    font-size: 1.2em;
-    cursor: pointer;
-    background: linear-gradient(145deg, #753acc, #622f9d);
-    border: none;
-    border-radius: 15px;
-    color: white;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 5px 5px 10px #000000, -5px -5px 10px #333333;
-    transition: all 0.3s ease;
+/* Focus Effect for Accessibility */
+#opciones button:focus, #answers button:focus {
+    outline: 2px solid #fff; /* Adds white outline on focus */
+    outline-offset: 4px; /* Space between the outline and button */
+    transform: translateY(-5px); /* Moves button up slightly */
+    box-shadow: 10px 10px 20px #000000, -10px -10px 20px #333333; /* Enhances shadow for deeper effect */
 }
 
+/* Styling for the Question Text */
 #question {
-    font-size: 2em;
-    color: #000000; /* Cambié a negro para mejor contraste */
-    font-family: 'Verdana', sans-serif;
-    margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.469); /* Fondo blanco semi-transparente */
-    padding: 5px; /* Añade espacio interno para mejorar la separación del texto */
-    border-radius: 10px; /* Bordes redondeados para un efecto visual más agradable */
+    font-size: 4vw; /* Responsive text size based on viewport width */
+    color: #000000; /* Black text color for contrast */
+    font-family: 'Verdana', sans-serif; /* Sets font style */
+    margin-bottom: 20px; /* Space below the question */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    padding: 5px; /* Internal padding for spacing */
+    border-radius: 10px; /* Rounded corners for better appearance */
 }
 
+/* Styling for GitHub Link */
 .github-link {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    text-decoration: none;
-    color: #fff;
+    display: flex; /* Aligns icon and text in a row */
+    align-items: center; /* Vertically centers items */
+    margin-top: 10px; /* Space above the link */
+    text-decoration: none; /* Removes underline */
+    color: #fff; /* White color for better contrast */
 }
 
-.github-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 8px;
-    border-radius: 15px; /* Bordes redondeados para un efecto visual más agradable */
+/* Hover Effect for GitHub Link */
+.github-link:hover {
+    color: #00aaff; /* Changes text color on hover */
+    text-decoration: underline; /* Adds underline for emphasis */
+}
 
+/* Styling for GitHub Icon */
+.github-icon {
+    width: 24px; /* Sets icon width */
+    height: 24px; /* Sets icon height */
+    margin-right: 8px; /* Space between icon and text */
+    border-radius: 15px; /* Rounds the corners of the icon */
 }
